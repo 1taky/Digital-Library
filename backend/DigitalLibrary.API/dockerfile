@@ -1,0 +1,28 @@
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+COPY ["DigitalLibrary.API/DigitalLibrary.API.csproj", "DigitalLibrary.API/"]
+COPY ["DigitalLibrary.BLL/DigitalLibrary.BLL.csproj", "DigitalLibrary.BLL/"]
+COPY ["DigitalLibrary.DAL/DigitalLibrary.DAL.csproj", "DigitalLibrary.DAL/"]
+COPY ["DigitalLibrary.IoC/DigitalLibrary.IoC.csproj", "DigitalLibrary.IoC/"]
+COPY ["DigitalLibrary.sln", "./"]
+
+RUN dotnet restore "DigitalLibrary.API/DigitalLibrary.API.csproj"
+
+COPY . .
+WORKDIR "/src/DigitalLibrary.API"
+
+RUN dotnet build "DigitalLibrary.API.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "DigitalLibrary.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+ENTRYPOINT ["dotnet", "DigitalLibrary.API.dll"]

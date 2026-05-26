@@ -14,5 +14,19 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  backend:
+    container_name: digital_library_api
+    build:
+      context: ./backend
+      dockerfile: DigitalLibrary.API/Dockerfile
+    restart: always
+    ports:
+      - '8080:8080'
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=digital_library;Username=postgres;Password=password;
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - db
+
 volumes:
   postgres_data:
