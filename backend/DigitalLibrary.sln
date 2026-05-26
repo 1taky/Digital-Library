@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalLibrary.DAL", "Digit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalLibrary.Tests", "DigitalLibrary.Tests\DigitalLibrary.Tests.csproj", "{0F660A2F-3A97-4988-BAD7-B857676F6671}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalLibrary.IoC", "DigitalLibrary.IoC\DigitalLibrary.IoC.csproj", "{74059D10-C27F-44DE-AA29-3A345141188D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{0F660A2F-3A97-4988-BAD7-B857676F6671}.Release|x64.Build.0 = Release|Any CPU
 		{0F660A2F-3A97-4988-BAD7-B857676F6671}.Release|x86.ActiveCfg = Release|Any CPU
 		{0F660A2F-3A97-4988-BAD7-B857676F6671}.Release|x86.Build.0 = Release|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Debug|x64.Build.0 = Debug|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Debug|x86.Build.0 = Debug|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Release|x64.ActiveCfg = Release|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Release|x64.Build.0 = Release|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Release|x86.ActiveCfg = Release|Any CPU
+		{74059D10-C27F-44DE-AA29-3A345141188D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
