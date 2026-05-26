@@ -1,11 +1,6 @@
 {
   "files": [],
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
     "types": ["bun-types"]
   },
   "references": [
