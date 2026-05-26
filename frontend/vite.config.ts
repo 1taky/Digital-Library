@@ -5,6 +5,10 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    port: 3000, // Replace 3000 with your desired port number
+    strictPort: true, // Optional: if true, Vite will fail if the port is already in use
+  },
   plugins: [vue(), tailwindcss()],
   resolve: {
     alias: {
