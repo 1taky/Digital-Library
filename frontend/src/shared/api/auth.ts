@@ -2,6 +2,7 @@ import type {
   AuthResponseType,
   LoginPayload,
   RegisterPayload,
+  UserType,
 } from '@/shared/types';
 import { apiClient } from '@/shared/api/';
 
@@ -22,5 +23,10 @@ export const registerUser = async (
     '/auth/register',
     payload,
   );
+  return response.data;
+};
+
+export const fetchMe = async (): Promise<UserType> => {
+  const response = await apiClient.get<UserType>('/auth/me');
   return response.data;
 };

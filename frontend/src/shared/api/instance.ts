@@ -10,7 +10,7 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem('token-jwt');
 
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -30,7 +30,7 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       console.error('Token is invalid or terminated');
-      localStorage.removeItem('jwt');
+      localStorage.removeItem('token-jwt');
     }
 
     return Promise.reject(error);

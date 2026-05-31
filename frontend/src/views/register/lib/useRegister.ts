@@ -1,9 +1,10 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/app/stores';
-import { loginUser } from '@/shared/api/auth';
+import { registerUser } from '@/shared';
 
-export const useLogin = () => {
+export const useRegister = () => {
+  const fullName = ref('');
   const email = ref('');
   const password = ref('');
   const isLoading = ref(false);
@@ -17,7 +18,8 @@ export const useLogin = () => {
     errorMessage.value = '';
 
     try {
-      const response = await loginUser({
+      const response = await registerUser({
+        fullName: fullName.value,
         email: email.value,
         password: password.value,
       });
@@ -28,7 +30,6 @@ export const useLogin = () => {
       router.push('/');
     } catch (error: any) {
       console.log(error);
-
       errorMessage.value =
         error.response?.data?.message || 'Authorization error';
     } finally {
@@ -37,6 +38,7 @@ export const useLogin = () => {
   };
 
   return {
+    fullName,
     email,
     password,
     isLoading,

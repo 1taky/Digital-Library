@@ -1,3 +1,4 @@
+import { fetchMe } from '@/shared/api';
 import type { UserType } from '@/shared/types';
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
@@ -26,6 +27,18 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('token-jwt');
   };
 
+  const loadUser = async () => {
+    if (!token.value) return;
+
+    try {
+      const userData = await fetchMe();
+      user.value = userData;
+    } catch (error) {
+      console.error('Error renewing session:', error);
+      logout();
+    }
+  };
+
   return {
     token,
     user,
@@ -33,5 +46,6 @@ export const useAuthStore = defineStore('auth', () => {
     // currentRole,
     setAuthData,
     logout,
+    loadUser,
   };
 });

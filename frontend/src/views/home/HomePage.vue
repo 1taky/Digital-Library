@@ -7,11 +7,13 @@ const router = useRouter();
 
 const handleLogout = () => {
   authStore.logout();
-  router.push('/login');
+  router.push('/');
 };
-
 const goToRegister = () => {
   router.push('/register');
+};
+const goToLogin = () => {
+  router.push('/log-in');
 };
 </script>
 
@@ -28,9 +30,7 @@ const goToRegister = () => {
       <p>Ви не увійшли в систему.</p>
       <button @click="goToRegister">Реєстрація</button>
 
-      <button @click="router.push('/log-in')" style="margin-left: 10px">
-        Увійти
-      </button>
+      <button @click="goToLogin" style="margin-left: 10px">Увійти</button>
     </div>
   </div>
 </template>
