@@ -3,7 +3,7 @@ import { Navbar } from '@/shared/ui/navbar';
 </script>
 
 <template>
-  <body>
+  <div class="overflow-hidden">
     <header>
       <Navbar />
     </header>
@@ -11,5 +11,5 @@ import { Navbar } from '@/shared/ui/navbar';
       <slot />
     </main>
     <footer></footer>
-  </body>
+  </div>
 </template>

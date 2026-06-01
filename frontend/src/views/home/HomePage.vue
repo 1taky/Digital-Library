@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/app/stores';
+import { Container } from '@/shared/ui/container';
+import { Section } from '@/shared/ui/section';
 import { Typography } from '@/shared/ui/typography';
 import { useRouter } from 'vue-router';
 
@@ -19,19 +21,21 @@ const goToLogin = () => {
 </script>
 
 <template>
-  <div>
-    <Typography as="h1">Головна сторінка</Typography>
+  <Section class-name="mt-20">
+    <Container>
+      <Typography as="h1">Головна сторінка</Typography>
 
-    <div v-if="authStore.user">
-      <p>Привіт, {{ authStore.user.fullName }}!</p>
-      <button @click="handleLogout">Вийти</button>
-    </div>
+      <div v-if="authStore.user">
+        <p>Привіт, {{ authStore.user.fullName }}!</p>
+        <button @click="handleLogout">Вийти</button>
+      </div>
 
-    <div v-else>
-      <p>Ви не увійшли в систему.</p>
-      <button @click="goToRegister">Реєстрація</button>
+      <div v-else>
+        <p>Ви не увійшли в систему.</p>
+        <button @click="goToRegister">Реєстрація</button>
 
-      <button @click="goToLogin" style="margin-left: 10px">Увійти</button>
-    </div>
-  </div>
+        <button @click="goToLogin" style="margin-left: 10px">Увійти</button>
+      </div>
+    </Container>
+  </Section>
 </template>
