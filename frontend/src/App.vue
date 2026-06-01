@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useAuthStore } from '@/app/stores';
+import { Layout } from '@/app/layouts';
 
 const authStore = useAuthStore();
 onMounted(() => {
@@ -9,5 +10,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <router-view></router-view>
+  <Layout>
+    <router-view />
+  </Layout>
 </template>
