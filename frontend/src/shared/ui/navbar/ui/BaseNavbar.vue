@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Typography } from '../../typography';
 import type { NavbarProps } from '../model/types';
-import { useNavbar } from '../model/useNavbar';
+import { useNavbar } from '../model/use-navbar';
 
 const props = withDefaults(defineProps<NavbarProps>(), {});
 
