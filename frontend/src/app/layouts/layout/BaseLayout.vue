@@ -1,8 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Navbar } from '@/shared/ui/navbar';
+</script>
 
 <template>
   <body>
-    <header></header>
+    <header>
+      <Navbar />
+    </header>
     <main>
       <slot />
     </main>

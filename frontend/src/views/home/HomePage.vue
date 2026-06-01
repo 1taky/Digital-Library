@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/app/stores';
+import { Typography } from '@/shared/ui/typography';
 import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
@@ -19,7 +20,7 @@ const goToLogin = () => {
 
 <template>
   <div>
-    <h1>Головна сторінка</h1>
+    <Typography as="h1">Головна сторінка</Typography>
 
     <div v-if="authStore.user">
       <p>Привіт, {{ authStore.user.fullName }}!</p>
