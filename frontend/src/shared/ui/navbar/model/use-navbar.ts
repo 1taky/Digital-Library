@@ -12,11 +12,14 @@ export const useNavbar = (props: NavbarProps) => {
   });
 
   const sideClassName = computed(() => {
-    return cn('flex flex-row');
+    return cn('flex flex-row items-center');
   });
 
   const actionClassname = computed(() => {
-    return cn('text-muted hover:text-muted-foreground active:text-foreground');
+    return cn(
+      'text-muted transition-colors duration-150 ease-in-out hover:text-muted-foreground active:text-foreground',
+    );
   });
+
   return { className, sideClassName, actionClassname };
 };
