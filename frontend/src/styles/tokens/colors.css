@@ -1,0 +1,19 @@
+:root {
+  --background: #f7fff7;
+  --foreground: #111111;
+  --muted: #9d9faf;
+  --muted-foreground: #676a7e;
+
+  --accent-yellow: #ffe66d;
+  --accent-red: #ff6b6b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --muted-foreground: var(--muted-foreground);
+
+  --accent-yellow: var(--accent-yellow);
+  --accent-red: var(--accent-red);
+}
