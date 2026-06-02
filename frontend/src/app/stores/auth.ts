@@ -9,10 +9,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!token.value);
 
-  // перевірка ролі | треба узгодження типів з бекендом
-  // const currentRole = computed<RoleType>(() => {
-  //   return user.value ? user.value.role : 'guest';
-  // });
+  const currentRole = computed(() =>
+    user.value ? user.value.role : undefined,
+  );
 
   const setAuthData = (jwt: string, userData: UserType) => {
     token.value = jwt;
@@ -43,7 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
     token,
     user,
     isAuthenticated,
-    // currentRole,
+    currentRole,
     setAuthData,
     logout,
     loadUser,
