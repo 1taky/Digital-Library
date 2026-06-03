@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/app/stores';
-import { loginUser } from '@/shared/api/auth';
+import { loginUser } from '@/shared/api/auth/auth';
 
 export const useLogin = () => {
   const email = ref('');
