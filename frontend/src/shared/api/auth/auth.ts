@@ -1,10 +1,10 @@
-import type {
-  AuthResponseType,
-  LoginPayload,
-  RegisterPayload,
-  UserType,
-} from '@/shared/types';
-import { apiClient } from '@/shared/api/';
+import {
+  apiClient,
+  type AuthResponseType,
+  type LoginPayload,
+  type RegisterPayload,
+  type UserType,
+} from '@/shared/api/';
 
 export const loginUser = async (
   payload: LoginPayload,
