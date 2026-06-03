@@ -27,3 +27,7 @@ export const updateBook = async (
 
   return response.data;
 };
+
+export const deleteBook = async (id: number): Promise<void> => {
+  await apiClient.delete(`/books/${id}`);
+};
