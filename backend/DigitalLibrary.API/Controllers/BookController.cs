@@ -26,9 +26,14 @@ public class BooksController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<List<BookResponseModel>>> GetAll()
+    public async Task<ActionResult<List<BookResponseModel>>> GetAll(
+    [FromQuery] BookFilterRequestModel filterModel)
     {
-        List<BookResponseDto> responseDto = await _bookService.GetAllAsync();
+        BookFilterRequestDto requestDto =
+            _mapper.Map<BookFilterRequestDto>(filterModel);
+
+        List<BookResponseDto> responseDto =
+            await _bookService.GetFilteredAsync(requestDto);
 
         List<BookResponseModel> responseModel =
             _mapper.Map<List<BookResponseModel>>(responseDto);
