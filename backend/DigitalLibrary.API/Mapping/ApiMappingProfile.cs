@@ -17,5 +17,9 @@ public class ApiMappingProfile : Profile
         CreateMap<AuthResponseDto, AuthResponseModel>();
 
         CreateMap<UserResponseDto, UserResponseModel>();
+
+        CreateMap<CreateGenreRequestModel, CreateGenreRequestDto>();
+
+        CreateMap<GenreResponseDto, GenreResponseModel>();
     }
 }
