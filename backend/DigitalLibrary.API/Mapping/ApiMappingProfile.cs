@@ -27,5 +27,7 @@ public class ApiMappingProfile : Profile
         CreateMap<UpdateBookRequestModel, UpdateBookRequestDto>();
 
         CreateMap<BookResponseDto, BookResponseModel>();
+
+        CreateMap<BookFilterRequestModel, BookFilterRequestDto>();
     }
 }
