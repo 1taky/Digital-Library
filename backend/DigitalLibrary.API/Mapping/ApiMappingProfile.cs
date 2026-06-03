@@ -21,5 +21,11 @@ public class ApiMappingProfile : Profile
         CreateMap<CreateGenreRequestModel, CreateGenreRequestDto>();
 
         CreateMap<GenreResponseDto, GenreResponseModel>();
+
+        CreateMap<CreateBookRequestModel, CreateBookRequestDto>();
+
+        CreateMap<UpdateBookRequestModel, UpdateBookRequestDto>();
+
+        CreateMap<BookResponseDto, BookResponseModel>();
     }
 }

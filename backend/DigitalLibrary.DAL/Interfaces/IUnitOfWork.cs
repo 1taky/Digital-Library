@@ -6,5 +6,7 @@ public interface IUnitOfWork
 
     IGenreRepository Genres { get; }
 
+    IBookRepository Books { get; }
+
     Task<int> SaveChangesAsync();
 }

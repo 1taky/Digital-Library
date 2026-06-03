@@ -51,19 +51,27 @@ public class DependencyResolver : Module
             .InstancePerLifetimeScope();
 
         builder.RegisterType<JwtService>()
-    .As<IJwtService>()
-    .InstancePerLifetimeScope();
+            .As<IJwtService>()
+            .InstancePerLifetimeScope();
 
         builder.RegisterType<DatabaseInitializer>()
             .AsSelf()
             .InstancePerLifetimeScope();
 
         builder.RegisterType<GenreRepository>()
-.As<IGenreRepository>()
-.InstancePerLifetimeScope();
+            .As<IGenreRepository>()
+            .InstancePerLifetimeScope();
 
         builder.RegisterType<GenreService>()
             .As<IGenreService>()
+            .InstancePerLifetimeScope();
+
+        builder.RegisterType<BookRepository>()
+            .As<IBookRepository>()
+            .InstancePerLifetimeScope();
+
+        builder.RegisterType<BookService>()
+            .As<IBookService>()
             .InstancePerLifetimeScope();
     }
 }
