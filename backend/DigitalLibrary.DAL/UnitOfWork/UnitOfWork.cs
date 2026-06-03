@@ -9,12 +9,16 @@ public class UnitOfWork : IUnitOfWork
 
     public IUserRepository Users { get; }
 
+    public IGenreRepository Genres { get; }
+
     public UnitOfWork(
         DigitalLibraryDbContext context,
-        IUserRepository users)
+        IUserRepository users,
+        IGenreRepository genres)
     {
         _context = context;
         Users = users;
+        Genres = genres;
     }
 
     public async Task<int> SaveChangesAsync()

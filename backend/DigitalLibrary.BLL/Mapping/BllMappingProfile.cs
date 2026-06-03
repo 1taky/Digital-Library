@@ -25,5 +25,13 @@ public class BllMappingProfile : Profile
 
         CreateMap<User, UserResponseDto>()
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()));
+
+        CreateMap<CreateGenreRequestDto, Genre>()
+        .ForMember(destination => destination.Id, options => options.Ignore())
+        .ForMember(
+            destination => destination.Name,
+            options => options.MapFrom(source => source.Name.Trim()));
+
+        CreateMap<Genre, GenreResponseDto>();
     }
 }

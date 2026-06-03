@@ -11,6 +11,7 @@ public class DigitalLibraryDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<Genre> Genres => Set<Genre>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,5 +51,19 @@ public class DigitalLibraryDbContext : DbContext
             entity.Property(user => user.CreatedAt)
                 .IsRequired();
         });
+
+        modelBuilder.Entity<Genre>(entity =>
+{
+    entity.ToTable("genres");
+
+    entity.HasKey(genre => genre.Id);
+
+    entity.Property(genre => genre.Name)
+        .IsRequired()
+        .HasMaxLength(100);
+
+    entity.HasIndex(genre => genre.Name)
+        .IsUnique();
+});
     }
 }

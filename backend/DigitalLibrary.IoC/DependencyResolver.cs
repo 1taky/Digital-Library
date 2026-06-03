@@ -57,5 +57,13 @@ public class DependencyResolver : Module
         builder.RegisterType<DatabaseInitializer>()
             .AsSelf()
             .InstancePerLifetimeScope();
+
+        builder.RegisterType<GenreRepository>()
+.As<IGenreRepository>()
+.InstancePerLifetimeScope();
+
+        builder.RegisterType<GenreService>()
+            .As<IGenreService>()
+            .InstancePerLifetimeScope();
     }
 }
