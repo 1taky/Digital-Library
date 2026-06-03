@@ -5,4 +5,5 @@ namespace DigitalLibrary.DAL.Interfaces;
 public interface IGenreRepository : IGenericRepository<Genre>
 {
     Task<bool> ExistsByNameAsync(string name);
+    Task<Genre?> GetByNameAsync(string name);
 }

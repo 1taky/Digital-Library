@@ -48,13 +48,13 @@ public class BookService : IBookService
             request.Author,
             request.Description,
             request.BookType,
-            request.GenreId,
+            request.GenreName,
             request.Language,
             request.PublicationYear,
             request.PagesCount,
             request.DurationMinutes);
 
-        Genre? genre = await _unitOfWork.Genres.GetByIdAsync(request.GenreId);
+        Genre? genre = await _unitOfWork.Genres.GetByNameAsync(request.GenreName);
 
         if (genre == null)
         {
@@ -63,6 +63,7 @@ public class BookService : IBookService
 
         Book book = _mapper.Map<Book>(request);
 
+        book.GenreId = genre.Id;
         book.IsAvailable = true;
         book.CreatedAt = DateTime.UtcNow;
 
@@ -82,7 +83,7 @@ public class BookService : IBookService
             request.Author,
             request.Description,
             request.BookType,
-            request.GenreId,
+            request.GenreName,
             request.Language,
             request.PublicationYear,
             request.PagesCount,
@@ -95,7 +96,7 @@ public class BookService : IBookService
             throw new NotFoundException("Книгу не знайдено.");
         }
 
-        Genre? genre = await _unitOfWork.Genres.GetByIdAsync(request.GenreId);
+        Genre? genre = await _unitOfWork.Genres.GetByNameAsync(request.GenreName);
 
         if (genre == null)
         {
@@ -103,6 +104,8 @@ public class BookService : IBookService
         }
 
         _mapper.Map(request, book);
+
+        book.GenreId = genre.Id;
 
         _unitOfWork.Books.Update(book);
         await _unitOfWork.SaveChangesAsync();
@@ -131,7 +134,7 @@ public class BookService : IBookService
         string author,
         string description,
         string bookType,
-        int genreId,
+        string genreName,
         string language,
         int publicationYear,
         int? pagesCount,
@@ -157,7 +160,7 @@ public class BookService : IBookService
             throw new BadRequestException("Неправильний тип книги.");
         }
 
-        if (genreId <= 0)
+        if (string.IsNullOrWhiteSpace(genreName))
         {
             throw new BadRequestException("Жанр книги є обов'язковим.");
         }

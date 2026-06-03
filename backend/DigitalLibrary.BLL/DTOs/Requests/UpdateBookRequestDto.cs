@@ -10,7 +10,7 @@ public class UpdateBookRequestDto
 
     public string BookType { get; set; } = string.Empty;
 
-    public int GenreId { get; set; }
+    public string GenreName { get; set; } = string.Empty;
 
     public string Language { get; set; } = string.Empty;
 

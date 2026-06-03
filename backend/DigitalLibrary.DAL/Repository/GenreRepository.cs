@@ -19,4 +19,12 @@ public class GenreRepository : GenericRepository<Genre>, IGenreRepository
         return await DbSet.AnyAsync(genre =>
             genre.Name.ToUpper() == normalizedName);
     }
+
+    public async Task<Genre?> GetByNameAsync(string name)
+{
+    string normalizedName = name.Trim().ToUpper();
+
+    return await DbSet.FirstOrDefaultAsync(genre =>
+        genre.Name.ToUpper() == normalizedName);
+}
 }
