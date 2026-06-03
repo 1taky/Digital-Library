@@ -187,4 +187,69 @@ public class BookService : IBookService
             }
         }
     }
+
+    public async Task<List<BookResponseDto>> GetFilteredAsync(BookFilterRequestDto request)
+    {
+        BookType? parsedBookType = null;
+
+        if (!string.IsNullOrWhiteSpace(request.BookType))
+        {
+            bool isValidBookType = Enum.TryParse(
+                request.BookType,
+                true,
+                out BookType bookType);
+
+            if (!isValidBookType)
+            {
+                throw new BadRequestException("Неправильний тип книги.");
+            }
+
+            parsedBookType = bookType;
+        }
+
+        ValidateSortParameters(request.SortBy, request.SortDirection);
+
+        List<Book> books = await _unitOfWork.Books.GetFilteredAsync(
+            request.Search,
+            request.GenreId,
+            parsedBookType,
+            request.SortBy,
+            request.SortDirection);
+
+        return _mapper.Map<List<BookResponseDto>>(books);
+    }
+    private static void ValidateSortParameters(
+    string? sortBy,
+    string? sortDirection)
+    {
+        if (!string.IsNullOrWhiteSpace(sortBy))
+        {
+            string normalizedSortBy = sortBy.Trim().ToLower();
+
+            string[] allowedSortFields =
+            {
+            "title",
+            "author",
+            "year",
+            "type",
+            "genre"
+        };
+
+            if (!allowedSortFields.Contains(normalizedSortBy))
+            {
+                throw new BadRequestException("Неправильне поле для сортування.");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(sortDirection))
+        {
+            string normalizedSortDirection = sortDirection.Trim().ToLower();
+
+            if (normalizedSortDirection != "asc" &&
+                normalizedSortDirection != "desc")
+            {
+                throw new BadRequestException("Напрям сортування має бути asc або desc.");
+            }
+        }
+    }
 }
