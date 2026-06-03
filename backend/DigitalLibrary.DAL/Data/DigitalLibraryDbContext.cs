@@ -69,43 +69,43 @@ public class DigitalLibraryDbContext : DbContext
 
     modelBuilder.Entity<Book>(entity =>
 {
-entity.ToTable("books");
+    entity.ToTable("books");
 
-entity.HasKey(book => book.Id);
+    entity.HasKey(book => book.Id);
 
-entity.Property(book => book.Title)
-    .IsRequired()
-    .HasMaxLength(200);
+    entity.Property(book => book.Title)
+        .IsRequired()
+        .HasMaxLength(200);
 
-entity.Property(book => book.Author)
-    .IsRequired()
-    .HasMaxLength(150);
+    entity.Property(book => book.Author)
+        .IsRequired()
+        .HasMaxLength(150);
 
-entity.Property(book => book.Description)
-    .IsRequired()
-    .HasMaxLength(2000);
+    entity.Property(book => book.Description)
+        .IsRequired()
+        .HasMaxLength(2000);
 
-entity.Property(book => book.BookType)
-    .IsRequired()
-    .HasConversion<string>();
+    entity.Property(book => book.BookType)
+        .IsRequired()
+        .HasConversion<string>();
 
-entity.Property(book => book.Language)
-    .IsRequired()
-    .HasMaxLength(50);
+    entity.Property(book => book.Language)
+        .IsRequired()
+        .HasMaxLength(50);
 
-entity.Property(book => book.PublicationYear)
-    .IsRequired();
+    entity.Property(book => book.PublicationYear)
+        .IsRequired();
 
-entity.Property(book => book.IsAvailable)
-    .IsRequired();
+    entity.Property(book => book.IsAvailable)
+        .IsRequired();
 
-entity.Property(book => book.CreatedAt)
-    .IsRequired();
+    entity.Property(book => book.CreatedAt)
+        .IsRequired();
 
-entity.HasOne(book => book.Genre)
-    .WithMany(genre => genre.Books)
-    .HasForeignKey(book => book.GenreId)
-    .OnDelete(DeleteBehavior.Restrict);
+    entity.HasOne(book => book.Genre)
+        .WithMany(genre => genre.Books)
+        .HasForeignKey(book => book.GenreId)
+        .OnDelete(DeleteBehavior.Restrict);
 });
 });
     }

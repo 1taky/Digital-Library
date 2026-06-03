@@ -37,17 +37,17 @@ public class BllMappingProfile : Profile
 
 
         CreateMap<CreateBookRequestDto, Book>()
-    .ForMember(dest => dest.Id, opt => opt.Ignore())
-    .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => Enum.Parse<BookType>(src.BookType, true)))
-    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Trim()))
-    .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author.Trim()))
-    .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Trim()))
-    .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.Trim()))
-    .ForMember(dest => dest.IsAvailable, opt => opt.Ignore())
-    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-    .ForMember(dest => dest.Genre, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => Enum.Parse<BookType>(src.BookType, true)))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Trim()))
+            .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author.Trim()))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Trim()))
+            .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.Trim()))
+            .ForMember(dest => dest.IsAvailable, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.Genre, opt => opt.Ignore());
 
-        CreateMap<UpdateBookRequestDto, Book>()
+       CreateMap<UpdateBookRequestDto, Book>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => Enum.Parse<BookType>(src.BookType, true)))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Trim()))
@@ -55,6 +55,7 @@ public class BllMappingProfile : Profile
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Trim()))
             .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.Trim()))
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.IsAvailable, opt => opt.Ignore())
             .ForMember(dest => dest.Genre, opt => opt.Ignore());
 
         CreateMap<Book, BookResponseDto>()

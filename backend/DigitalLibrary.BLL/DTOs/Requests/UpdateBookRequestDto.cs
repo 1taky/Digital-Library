@@ -19,6 +19,4 @@ public class UpdateBookRequestDto
     public int? PagesCount { get; set; }
 
     public int? DurationMinutes { get; set; }
-
-    public bool IsAvailable { get; set; }
 }
