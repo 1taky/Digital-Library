@@ -2,6 +2,7 @@ using AutoMapper;
 using DigitalLibrary.BLL.DTOs.Requests;
 using DigitalLibrary.BLL.DTOs.Responses;
 using DigitalLibrary.DAL.Entities;
+using DigitalLibrary.DAL.Enums;
 
 namespace DigitalLibrary.BLL.Mapping;
 
@@ -33,5 +34,31 @@ public class BllMappingProfile : Profile
             options => options.MapFrom(source => source.Name.Trim()));
 
         CreateMap<Genre, GenreResponseDto>();
+
+
+        CreateMap<CreateBookRequestDto, Book>()
+    .ForMember(dest => dest.Id, opt => opt.Ignore())
+    .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => Enum.Parse<BookType>(src.BookType, true)))
+    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Trim()))
+    .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author.Trim()))
+    .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Trim()))
+    .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.Trim()))
+    .ForMember(dest => dest.IsAvailable, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+    .ForMember(dest => dest.Genre, opt => opt.Ignore());
+
+        CreateMap<UpdateBookRequestDto, Book>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => Enum.Parse<BookType>(src.BookType, true)))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Trim()))
+            .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author.Trim()))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Trim()))
+            .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.Trim()))
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.Genre, opt => opt.Ignore());
+
+        CreateMap<Book, BookResponseDto>()
+            .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => src.BookType.ToString()))
+            .ForMember(dest => dest.GenreName, opt => opt.MapFrom(src => src.Genre.Name));
     }
 }
