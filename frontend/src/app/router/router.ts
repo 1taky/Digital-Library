@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { HomePage, LogInPage, RegisterPage } from '@/views';
+import { useAuthStore } from '../stores';
+import { AdminDashboard } from '@/views/admin-dashboard';
 
 const routes = [
   {
@@ -20,9 +22,43 @@ const routes = [
     component: RegisterPage,
     meta: { title: 'Реєстрація' },
   },
+  {
+    path: '/admin/panel',
+    name: 'Admin Panel',
+    component: AdminDashboard,
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+  },
 ];
 
-export const router = createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach(async (to, _, next) => {
+  const authStore = useAuthStore();
+
+  if (authStore.token && !authStore.user) {
+    try {
+      await authStore.loadUser();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  if (to.meta.requiresAuth) {
+    if (!authStore.token) {
+      return next('/log-in');
+    }
+
+    if (to.meta.requiresAdmin && authStore.user?.role !== 'Admin') {
+      return next('/');
+    }
+  }
+
+  next();
+});
+
+export default router;
