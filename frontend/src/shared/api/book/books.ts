@@ -1,8 +1,12 @@
 import { apiClient } from '../instance/instance';
-import type { Book, BookPayload, UpdateBookPayload } from './types/book';
+import type { Book, BookPayload, BookType } from './types/book';
 
-export const fetchBooks = async (): Promise<Book[]> => {
-  const response = await apiClient.get<Book[]>('/books');
+export const fetchBooks = async (params?: BookType): Promise<Book[]> => {
+  const response = await apiClient.get<Book[]>('/books', {
+    params: {
+      genreName: params || undefined,
+    },
+  });
 
   return response.data;
 };
@@ -21,7 +25,7 @@ export const fetchBookById = async (id: number): Promise<Book> => {
 
 export const updateBook = async (
   id: number,
-  payload: UpdateBookPayload,
+  payload: BookPayload,
 ): Promise<Book> => {
   const response = await apiClient.put<Book>(`/books/${id}`, payload);
 

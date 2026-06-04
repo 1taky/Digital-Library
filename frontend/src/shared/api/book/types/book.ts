@@ -6,7 +6,6 @@ export type Book = {
   author: string;
   description: string;
   bookType: BookType;
-  genreId: number;
   genreName: string;
   language: string;
   publicationYear: number;
@@ -21,22 +20,9 @@ export type BookPayload = {
   author: string;
   description: string;
   bookType: BookType;
-  genreId: number;
+  genreName: string;
   language: string;
   publicationYear: number;
   pagesCount: number;
   durationMinutes: number;
-};
-
-export type UpdateBookPayload = {
-  title: string;
-  author: string;
-  description: string;
-  bookType: BookType;
-  genreId: number;
-  language: string;
-  publicationYear: number;
-  pagesCount: number;
-  durationMinutes: number;
-  isAvailable: boolean; // Це поле додалося для PUT-запиту
 };
