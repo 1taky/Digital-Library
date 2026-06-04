@@ -1,32 +1,37 @@
-import { createBook, deleteBook, fetchBooks, updateBook } from '@/shared';
-import type {
-  Book,
-  BookPayload,
-  UpdateBookPayload,
-} from '@/shared/api/book/types/book';
+import {
+  type Book,
+  type BookPayload,
+  fetchBooks,
+  deleteBook,
+  updateBook,
+  createBook,
+  fetchGenres,
+} from '@/shared';
+import type { GenreType } from '@/shared/types/genre';
 import { ref, onMounted } from 'vue';
 
 export const useAdminBooks = () => {
   const books = ref<Book[]>([]);
+  const genres = ref<GenreType[]>([]);
+
   const isLoading = ref(false);
   const isModalOpen = ref(false);
   const isEditing = ref(false);
   const editingBookId = ref<number | null>(null);
 
-  const initialFormState: UpdateBookPayload = {
+  const initialFormState: BookPayload = {
     title: '',
     author: '',
     description: '',
     bookType: 'Paper',
-    genreId: 1,
+    genreName: '',
     language: 'Українська',
     publicationYear: new Date().getFullYear(),
-    pagesCount: 0,
-    durationMinutes: 0,
-    isAvailable: true,
+    pagesCount: 1,
+    durationMinutes: 1,
   };
 
-  const form = ref<UpdateBookPayload>({ ...initialFormState });
+  const form = ref<BookPayload>({ ...initialFormState });
 
   const loadBooks = async () => {
     isLoading.value = true;
@@ -66,12 +71,11 @@ export const useAdminBooks = () => {
       author: book.author,
       description: book.description,
       bookType: book.bookType,
-      genreId: book.genreId,
+      genreName: book.genreName, // Використовуємо рядок
       language: book.language,
       publicationYear: book.publicationYear,
       pagesCount: book.pagesCount,
       durationMinutes: book.durationMinutes,
-      isAvailable: book.isAvailable,
     };
     isModalOpen.value = true;
   };
@@ -85,8 +89,7 @@ export const useAdminBooks = () => {
       if (isEditing.value && editingBookId.value) {
         await updateBook(editingBookId.value, form.value);
       } else {
-        const { isAvailable, ...createData } = form.value;
-        await createBook(createData as BookPayload);
+        await createBook(form.value as BookPayload);
       }
       closeModal();
       await loadBooks();
@@ -96,17 +99,26 @@ export const useAdminBooks = () => {
     }
   };
 
+  const loadGenres = async () => {
+    try {
+      genres.value = await fetchGenres();
+    } catch (error) {
+      console.error('Помилка завантаження жанрів:', error);
+    }
+  };
+
   onMounted(() => {
     loadBooks();
+    loadGenres();
   });
 
   return {
     books,
+    genres,
     isLoading,
     isModalOpen,
     isEditing,
     form,
-    loadBooks,
     handleDelete,
     openAddModal,
     openEditModal,
