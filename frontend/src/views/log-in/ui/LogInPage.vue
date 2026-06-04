@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Section } from '@/shared/ui/section';
-import { useLogin } from './lib/useLogin';
+import { useLogin } from '../lib/useLogin';
 import { Container } from '@/shared/ui/container';
 import ShowPassword from '@/shared/icons/show-password/ui/ShowPassword.vue';
 import ShowPasswordActive from '@/shared/icons/show-password/ui/ShowPasswordActive.vue';
+import { Typography } from '@/shared/ui/typography';
 
 const { email, password, isLoading, errorMessage, handleSubmit } = useLogin();
 const showPassword = ref(false);
@@ -13,22 +14,32 @@ const showPassword = ref(false);
 <template>
   <Section class="mt-20">
     <Container>
-      <div class="max-w-md mx-auto bg-white rounded-2xl shadow-md p-8">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
-          Авторизація
-        </h2>
-
-        <p
+      <div class="max-w-md mx-auto bg-muted/2 rounded-2xl shadow-md p-8">
+        <Typography
+          as="h2"
+          weight="bold"
+          size="lg"
+          align="center"
+          class="text-foreground mb-6"
+          >Авторизація</Typography
+        >
+        <Typography
+          size="sm"
+          weight="medium"
           v-if="errorMessage"
-          class="text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg p-3 mb-4"
+          class="text-red-500 p-3 mb-4"
         >
           {{ errorMessage }}
-        </p>
-
+        </Typography>
         <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
           <div class="flex flex-col gap-1">
-            <label for="email" class="text-sm font-medium text-gray-700"
-              >Email</label
+            <Typography
+              as="label"
+              for="email"
+              size="sm"
+              weight="medium"
+              class="text-muted-foreground"
+              >Email</Typography
             >
             <input
               id="email"
@@ -42,8 +53,13 @@ const showPassword = ref(false);
           </div>
 
           <div class="flex flex-col gap-1">
-            <label for="password" class="text-sm font-medium text-gray-700"
-              >Пароль</label
+            <Typography
+              as="label"
+              for="password"
+              size="sm"
+              weight="medium"
+              class="text-muted-foreground"
+              >Пароль</Typography
             >
             <div class="relative">
               <input
@@ -58,7 +74,7 @@ const showPassword = ref(false);
               <button
                 type="button"
                 @click="showPassword = !showPassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted-foreground transition"
               >
                 <ShowPassword v-if="!showPassword" />
                 <ShowPasswordActive v-else />
@@ -69,18 +85,7 @@ const showPassword = ref(false);
           <button
             type="submit"
             :disabled="isLoading"
-            class="mt-2 text-white font-semibold rounded-lg py-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            style="background-color: #0c6038"
-            @mouseover="
-              (e) =>
-                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
-                  '#0a5230')
-            "
-            @mouseleave="
-              (e) =>
-                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
-                  '#0C6038')
-            "
+            class="bg-accent-dark-green/90 hover:bg-accent-dark-green active:bg-accent-dark-green/80 mt-2 text-background font-semibold rounded-lg py-2 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {{ isLoading ? 'Зачекайте...' : 'Увійти' }}
           </button>
