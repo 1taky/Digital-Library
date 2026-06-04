@@ -1,1 +1,1 @@
-export * from '@/app/router/router.ts';
+export { default as router } from './router';

@@ -7,6 +7,7 @@ import { useAuthStore } from '@/app/stores';
 import SearchBar from './SearchBar.vue';
 
 const authStore = useAuthStore();
+
 const router = useRouter();
 
 const handleLogout = () => {
@@ -37,6 +38,22 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
       <Typography size="sm" weight="medium">{{
         authStore.user?.fullName
       }}</Typography>
+      <div
+        :class="sideClassName"
+        class="gap-4"
+        v-if="authStore.currentRole === 'Admin'"
+      >
+        <a href="/admin/panel">
+          <Typography
+            size="sm"
+            weight="medium"
+            :class="actionClassname"
+            class="select-none cursor-pointer"
+          >
+            Адм. Панель
+          </Typography>
+        </a>
+      </div>
       <a @click="handleLogout">
         <Typography
           size="sm"
@@ -48,6 +65,7 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
         </Typography>
       </a>
     </div>
+
     <div :class="sideClassName" class="gap-4" v-else>
       <a :href="`/log-in`">
         <Typography size="sm" weight="medium" :class="actionClassname">
