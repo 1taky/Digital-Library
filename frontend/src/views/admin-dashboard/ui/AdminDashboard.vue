@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { Section } from '@/shared/ui/section';
-import { useAdminBooks } from '../model/useAdminBooks'; // Перевір шлях
 import { Container } from '@/shared/ui/container';
 import { Typography } from '@/shared/ui/typography';
+import { useAdminBooks } from '../model/use-admin-books.ts';
+import type { Book } from '@/shared';
+import BooksTable from './BooksTable.vue';
+import BookFormModal from './BookFormModal.vue';
+import BookFileManagerModal from './BookFileManagerModal.vue';
 
 const {
   books,
@@ -12,12 +17,23 @@ const {
   isEditing,
   form,
   errorMessage,
+  loadBooks,
   handleDelete,
   openAddModal,
   openEditModal,
   closeModal,
   handleSubmit,
 } = useAdminBooks();
+
+const fileManagerBookId = ref<number | null>(null);
+
+const openFileManager = (book: Book) => {
+  fileManagerBookId.value = book.id;
+};
+
+const closeFileManager = () => {
+  fileManagerBookId.value = null;
+};
 </script>
 
 <template>
@@ -39,237 +55,36 @@ const {
         <Typography
           size="sm"
           weight="medium"
-          v-if="errorMessage"
+          v-if="errorMessage && !isModalOpen"
           class="text-red-500 p-3 mb-4"
         >
           {{ errorMessage }}
         </Typography>
 
-        <div
-          v-if="isLoading"
-          class="text-center text-gray-500 py-10 border border-gray-200"
-        >
-          <Typography size="sm" weight="medium">
-            Завантаження даних...
-          </Typography>
-        </div>
+        <BooksTable
+          :books="books"
+          :isLoading="isLoading"
+          @edit="openEditModal"
+          @manage-files="openFileManager"
+          @delete="handleDelete"
+        />
 
-        <div v-else class="overflow-x-auto border border-muted-background">
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-gray-100 border-b border-gray-300">
-              <tr>
-                <th class="p-3 font-semibold border-r border-gray-200">ID</th>
-                <th class="p-3 font-semibold border-r border-gray-200">
-                  Назва
-                </th>
-                <th class="p-3 font-semibold border-r border-gray-200">
-                  Автор
-                </th>
-                <th class="p-3 font-semibold border-r border-gray-200">Жанр</th>
-                <th class="p-3 font-semibold border-r border-gray-200">Тип</th>
-                <th class="p-3 font-semibold border-r border-gray-200">Рік</th>
-                <th class="p-3 font-semibold text-center">Дії</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="book in books"
-                :key="book.id"
-                class="border-b border-gray-200 hover:bg-gray-50"
-              >
-                <td class="p-3 border-r border-gray-200">{{ book.id }}</td>
-                <td class="p-3 border-r border-gray-200 font-medium">
-                  {{ book.title }}
-                </td>
-                <td class="p-3 border-r border-gray-200">{{ book.author }}</td>
-                <td class="p-3 border-r border-gray-200">
-                  {{ book.genreName }}
-                </td>
-                <td class="p-3 border-r border-gray-200">
-                  {{ book.formats[0]?.formatType || '-' }}
-                </td>
-                <td class="p-3 border-r border-gray-200">
-                  {{ book.publicationYear }}
-                </td>
-                <td class="py-3 flex justify-center gap-2">
-                  <button
-                    @click="openEditModal(book)"
-                    class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded-full border border-blue-300 transition-colors cursor-pointer"
-                  >
-                    Редаг.
-                  </button>
-                  <button
-                    @click="handleDelete(book.id)"
-                    class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-full border border-red-300 transition-colors cursor-pointer"
-                  >
-                    Видалити
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="books.length === 0">
-                <td colspan="7" class="p-4 text-center text-gray-500">
-                  Список книг порожній.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <BookFormModal
+          :isOpen="isModalOpen"
+          :isEditing="isEditing"
+          :form="form"
+          :genres="genres"
+          :errorMessage="errorMessage"
+          @close="closeModal"
+          @submit="handleSubmit"
+        />
 
-        <div
-          v-if="isModalOpen"
-          class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
-          @click.self="closeModal"
-        >
-          <div
-            class="bg-white border border-gray-400 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-          >
-            <div class="p-5 border-b border-gray-300 bg-gray-50">
-              <Typography as="h2" weight="bold" size="md">
-                {{ isEditing ? 'Редагувати книгу' : 'Додати нову книгу' }}
-              </Typography>
-            </div>
-
-            <form
-              @submit.prevent="handleSubmit"
-              class="p-5 flex flex-col gap-4"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1">
-                  <label class="text-sm font-semibold">Назва книги</label>
-                  <input
-                    v-model="form.title"
-                    type="text"
-                    required
-                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-sm font-semibold">Автор</label>
-                  <input
-                    v-model="form.author"
-                    type="text"
-                    required
-                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
-                  />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1">
-                  <label class="text-sm font-semibold">Тип</label>
-                  <select
-                    v-model="form.formats[0].formatType"
-                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600 bg-white"
-                  >
-                    <option value="Paper">Паперова</option>
-                    <option value="Electronic">Електронна</option>
-                    <option value="Audio">Аудіокнига</option>
-                  </select>
-                </div>
-
-                <div class="flex flex-col gap-1">
-                  <Typography
-                    as="label"
-                    size="sm"
-                    weight="semibold"
-                    class="mt-1 mb-0.5"
-                  >
-                    Жанр
-                  </Typography>
-                  <select
-                    v-model="form.genreName"
-                    required
-                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600 bg-white"
-                  >
-                    <option value="" disabled>Оберіть жанр</option>
-                    <option
-                      v-for="genre in genres"
-                      :key="genre.id"
-                      :value="genre.name"
-                    >
-                      {{ genre.name }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="flex flex-col gap-1">
-                  <Typography as="label" size="sm" weight="semibold">
-                    Рік видання
-                  </Typography>
-                  <input
-                    v-model.number="form.publicationYear"
-                    type="number"
-                    required
-                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <Typography as="label" size="sm" weight="semibold"
-                    >Мова</Typography
-                  >
-                  <input
-                    v-model="form.language"
-                    type="text"
-                    required
-                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <Typography as="label" size="sm" weight="semibold"
-                    >К-сть сторінок</Typography
-                  >
-                  <input
-                    v-model.number="form.formats[0].pagesCount"
-                    type="number"
-                    required
-                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
-                  />
-                </div>
-              </div>
-
-              <div class="flex flex-col gap-1">
-                <Typography as="label" size="sm" weight="semibold"
-                  >Опис</Typography
-                >
-                <textarea
-                  v-model="form.description"
-                  rows="3"
-                  required
-                  class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600 resize-y"
-                ></textarea>
-              </div>
-
-              <Typography
-                size="sm"
-                weight="medium"
-                v-if="errorMessage"
-                class="text-red-500 p-3 mb-4"
-              >
-                {{ errorMessage }}
-              </Typography>
-
-              <div
-                class="flex justify-end gap-3 pt-4 border-t border-gray-300 mt-2"
-              >
-                <button
-                  type="button"
-                  @click="closeModal"
-                  class="px-5 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
-                >
-                  Скасувати
-                </button>
-                <button
-                  type="submit"
-                  class="px-5 py-2 bg-green-600 text-white hover:bg-green-700 border border-green-700 rounded-full transition-colors cursor-pointer"
-                >
-                  Зберегти
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <BookFileManagerModal
+          v-if="fileManagerBookId"
+          :book="books.find((b) => b.id === fileManagerBookId)!"
+          @close="closeFileManager"
+          @uploaded="loadBooks"
+        />
       </div>
     </Container>
   </Section>
