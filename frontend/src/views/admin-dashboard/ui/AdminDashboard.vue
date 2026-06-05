@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Section } from '@/shared/ui/section';
-import { useAdminBooks } from '../model/useAdminBooks';
+import { useAdminBooks } from '../model/useAdminBooks'; // Перевір шлях
 import { Container } from '@/shared/ui/container';
 import { Typography } from '@/shared/ui/typography';
 
@@ -21,8 +21,8 @@ const {
 </script>
 
 <template>
-  <Section class="mt-20"
-    ><Container>
+  <Section class="mt-20">
+    <Container>
       <div class="max-w-6xl mx-auto p-4 md:p-6 font-sans text-foreground">
         <header class="flex justify-between items-center mb-6">
           <Typography as="h1" weight="bold" size="lg">
@@ -35,6 +35,7 @@ const {
             + Додати книгу
           </button>
         </header>
+
         <Typography
           size="sm"
           weight="medium"
@@ -43,6 +44,7 @@ const {
         >
           {{ errorMessage }}
         </Typography>
+
         <div
           v-if="isLoading"
           class="text-center text-gray-500 py-10 border border-gray-200"
@@ -84,7 +86,7 @@ const {
                   {{ book.genreName }}
                 </td>
                 <td class="p-3 border-r border-gray-200">
-                  {{ book.bookType }}
+                  {{ book.formats[0]?.formatType || '-' }}
                 </td>
                 <td class="p-3 border-r border-gray-200">
                   {{ book.publicationYear }}
@@ -156,7 +158,7 @@ const {
                 <div class="flex flex-col gap-1">
                   <label class="text-sm font-semibold">Тип</label>
                   <select
-                    v-model="form.bookType"
+                    v-model="form.formats[0].formatType"
                     class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600 bg-white"
                   >
                     <option value="Paper">Паперова</option>
@@ -219,7 +221,7 @@ const {
                     >К-сть сторінок</Typography
                   >
                   <input
-                    v-model.number="form.pagesCount"
+                    v-model.number="form.formats[0].pagesCount"
                     type="number"
                     required
                     class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
@@ -238,6 +240,7 @@ const {
                   class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600 resize-y"
                 ></textarea>
               </div>
+
               <Typography
                 size="sm"
                 weight="medium"
@@ -268,6 +271,6 @@ const {
           </div>
         </div>
       </div>
-    </Container></Section
-  >
+    </Container>
+  </Section>
 </template>
