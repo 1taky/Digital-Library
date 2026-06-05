@@ -13,3 +13,6 @@ export * from '@/shared/api/book/types/book';
 
 export * from '@/shared/api/order/types/order';
 export * from '@/shared/api/order/orders';
+
+export * from '@/shared/api/user/users';
+export * from '@/shared/api/user/types/user';

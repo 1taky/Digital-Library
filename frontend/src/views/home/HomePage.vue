@@ -23,7 +23,7 @@ const {
 
 <template>
   <Section class="mt-20">
-    <Container>
+    <Container class="pt-24">
       <div
         class="mx-auto mb-16 flex max-w-4xl flex-col items-center px-4 text-center"
       >

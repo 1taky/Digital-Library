@@ -4,6 +4,8 @@ import { useAuthStore } from '../stores';
 import { AdminDashboard } from '@/views/admin-dashboard';
 import { BookInfo } from '@/views/book-info';
 import CatalogPage from '@/views/catalog/CatalogPage.vue';
+import OrdersPage from '@/views/order/ui/OrdersPage.vue';
+import { AdminUsersPage } from '@/views/admin-users';
 
 const routes = [
   {
@@ -36,7 +38,25 @@ const routes = [
     component: AdminDashboard,
     meta: {
       requiresAuth: true,
-      requiresAdmin: true,
+      allowedRoles: ['Admin', 'Manager'],
+    },
+  },
+  {
+    path: '/admin/orders',
+    name: 'Admin Orders',
+    component: OrdersPage,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['Admin', 'Manager'],
+    },
+  },
+  {
+    path: '/admin/users',
+    name: 'Admin Users',
+    component: AdminUsersPage,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['Admin'],
     },
   },
   {
@@ -67,8 +87,13 @@ router.beforeEach(async (to, _, next) => {
       return next('/log-in');
     }
 
-    if (to.meta.requiresAdmin && authStore.user?.role !== 'Admin') {
-      return next('/');
+    if (to.meta.allowedRoles) {
+      const userRole = authStore.user?.role;
+      const roles = to.meta.allowedRoles as string[];
+
+      if (!userRole || !roles.includes(userRole)) {
+        return next('/');
+      }
     }
   }
 

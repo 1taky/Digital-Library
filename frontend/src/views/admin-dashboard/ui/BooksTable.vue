@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Typography } from '@/shared/ui/typography';
 import type { Book } from '@/shared';
+import { useAuthStore } from '@/app/stores';
 
 defineProps<{
   books: Book[];
@@ -12,6 +13,8 @@ defineEmits<{
   (e: 'delete', id: number): void;
   (e: 'manage-files', book: Book): void;
 }>();
+
+const { currentRole } = useAuthStore();
 
 const formatTypeMap: Record<string, string> = {
   Paper: 'Паперова',
@@ -97,6 +100,7 @@ const formatTypeMap: Record<string, string> = {
               Файли
             </button>
             <button
+              v-if="currentRole === 'Admin'"
               @click="$emit('delete', book.id)"
               class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1.5 text-sm rounded-full border border-red-300 transition-colors cursor-pointer"
             >

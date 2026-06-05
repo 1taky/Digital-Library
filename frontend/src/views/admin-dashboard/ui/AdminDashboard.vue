@@ -8,6 +8,7 @@ import type { Book } from '@/shared';
 import BooksTable from './BooksTable.vue';
 import BookFormModal from './BookFormModal.vue';
 import BookFileManagerModal from './BookFileManagerModal.vue';
+import { useAuthStore } from '@/app/stores/auth.ts';
 
 const {
   books,
@@ -30,6 +31,7 @@ const {
   handleSubmit,
 } = useAdminBooks();
 
+const { currentRole } = useAuthStore();
 const fileManagerBookId = ref<number | null>(null);
 
 const openFileManager = (book: Book) => {
@@ -44,12 +46,18 @@ const closeFileManager = () => {
 <template>
   <Section class="mt-20">
     <Container>
-      <div class="max-w-6xl mx-auto p-4 md:p-6 font-sans text-foreground">
-        <header class="flex justify-between items-center mb-6">
-          <Typography as="h1" weight="bold" size="lg">
-            Панель адміністратора
-          </Typography>
+      <div class="max-w-6xl mx-auto p-4 md:p-6 text-foreground">
+        <header class="flex justify-between items-center-safe mb-6">
+          <div>
+            <Typography as="h1" weight="bold" size="lg">
+              Панель адміністратора
+            </Typography>
+            <Typography size="md" weight="medium" class="mb-8 mt-2">
+              На цій сторінці можна редагувати доступні книги з бази даних.
+            </Typography>
+          </div>
           <button
+            v-if="currentRole === 'Admin'"
             @click="openAddModal"
             class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full transition-colors cursor-pointer"
           >

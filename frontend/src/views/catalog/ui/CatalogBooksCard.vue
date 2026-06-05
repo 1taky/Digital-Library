@@ -16,11 +16,11 @@ const formatTypeMap: Record<string, string> = {
     class="border border-gray-200 rounded-md overflow-hidden bg-white hover:shadow-md transition-shadow flex flex-col h-full"
   >
     <img
-      :src="book.coverUrl || 'https://frecnuonna.s-ul.eu/kAbO2vrg'"
+      :src="book.coverUrl || 'https://frecnuonna.s-ul.eu/rsz8SyUm'"
       alt="Обкладинка"
       class="w-full h-56 object-cover bg-gray-100"
     />
-    <div class="p-4 flex flex-col flex-grow">
+    <div class="p-4 flex flex-col grow">
       <Typography
         as="h3"
         weight="bold"
