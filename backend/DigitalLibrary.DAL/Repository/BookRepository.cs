@@ -111,4 +111,61 @@ public class BookRepository : GenericRepository<Book>, IBookRepository
             book.Language.ToLower() == normalizedLanguage &&
             book.PublicationYear == publicationYear);
     }
+
+    public async Task<(List<Book> Items, bool HasMore)> GetFilteredByCursorAsync(
+    string? search,
+    string? genreName,
+    BookFormatType? formatType,
+    int? cursor,
+    int pageSize)
+{
+    IQueryable<Book> query = DbSet
+        .Include(book => book.Genre)
+        .Include(book => book.Formats)
+        .Include(book => book.Files)
+        .AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(search))
+    {
+        string normalizedSearch = search.Trim().ToLower();
+
+        query = query.Where(book =>
+            book.Title.ToLower().Contains(normalizedSearch) ||
+            book.Author.ToLower().Contains(normalizedSearch) ||
+            book.Description.ToLower().Contains(normalizedSearch));
+    }
+
+    if (!string.IsNullOrWhiteSpace(genreName))
+    {
+        string normalizedGenreName = genreName.Trim().ToLower();
+
+        query = query.Where(book =>
+            book.Genre.Name.ToLower() == normalizedGenreName);
+    }
+
+    if (formatType.HasValue)
+    {
+        query = query.Where(book =>
+            book.Formats.Any(format =>
+                format.FormatType == formatType.Value));
+    }
+
+    if (cursor.HasValue)
+    {
+        query = query.Where(book => book.Id > cursor.Value);
+    }
+
+    List<Book> books = await query
+        .OrderBy(book => book.Id)
+        .Take(pageSize + 1)
+        .ToListAsync();
+
+    bool hasMore = books.Count > pageSize;
+
+    List<Book> items = books
+        .Take(pageSize)
+        .ToList();
+
+    return (items, hasMore);
+}
 }

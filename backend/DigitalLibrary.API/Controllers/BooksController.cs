@@ -26,26 +26,34 @@ public class BooksController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<List<BookResponseModel>>> GetAll(
+    public async Task<ActionResult<CursorPagedResultModel<BookResponseModel>>> GetAll(
     [FromQuery] BookFilterRequestModel filterModel)
     {
         BookFilterRequestDto requestDto =
             _mapper.Map<BookFilterRequestDto>(filterModel);
 
-        List<BookResponseDto> responseDto =
+        CursorPagedResultDto<BookResponseDto> pagedResult =
             await _bookService.GetFilteredAsync(requestDto);
 
-        List<BookResponseModel> responseModel =
-            _mapper.Map<List<BookResponseModel>>(responseDto);
+        List<BookResponseModel> bookModels =
+            _mapper.Map<List<BookResponseModel>>(pagedResult.Items);
 
-        foreach (BookResponseModel model in responseModel)
+        foreach (BookResponseModel model in bookModels)
         {
-            BookResponseDto dto = responseDto.First(book => book.Id == model.Id);
+            BookResponseDto dto = pagedResult.Items
+                .First(book => book.Id == model.Id);
 
             FillFileUrls(model, dto);
         }
 
-        return Ok(responseModel);
+        var response = new CursorPagedResultModel<BookResponseModel>
+        {
+            Items = bookModels,
+            NextCursor = pagedResult.NextCursor,
+            HasMore = pagedResult.HasMore
+        };
+
+        return Ok(response);
     }
 
     [HttpGet("{id:int}")]
