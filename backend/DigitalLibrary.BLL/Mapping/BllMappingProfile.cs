@@ -100,5 +100,10 @@ public class BllMappingProfile : Profile
                 destination => destination.ManagerFullName,
                 options => options.MapFrom(source =>
                     source.Manager == null ? null : source.Manager.FullName));
+        
+        CreateMap<User, UserManagementResponseDto>()
+            .ForMember(
+                destination => destination.Role,
+                options => options.MapFrom(source => source.Role.ToString()));
     }
 }

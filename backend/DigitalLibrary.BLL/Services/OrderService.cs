@@ -83,6 +83,38 @@ public class OrderService : IOrderService
         return _mapper.Map<List<OrderResponseDto>>(orders);
     }
 
+    public async Task<OrderResponseDto> GetByIdAsync(
+    int orderId,
+    int currentUserId,
+    string currentUserRole)
+    {
+        Order order = await GetOrderOrThrowAsync(orderId);
+
+        bool isAdminOrManager =
+            string.Equals(currentUserRole, "Admin", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(currentUserRole, "Manager", StringComparison.OrdinalIgnoreCase);
+
+        bool isOwner = order.UserId == currentUserId;
+
+        if (!isAdminOrManager && !isOwner)
+        {
+            throw new ForbiddenException("Немає доступу до цього замовлення.");
+        }
+
+        if (order.Status == OrderStatus.Borrowed &&
+            order.DueDate.HasValue &&
+            order.DueDate.Value < DateTime.UtcNow)
+        {
+            order.Status = OrderStatus.Overdue;
+
+            _unitOfWork.Orders.Update(order);
+            await _unitOfWork.SaveChangesAsync();
+
+            order = await GetOrderOrThrowAsync(orderId);
+        }
+
+        return _mapper.Map<OrderResponseDto>(order);
+    }
     public async Task<OrderResponseDto> ApproveAsync(int orderId, int managerId)
     {
         Order order = await GetOrderOrThrowAsync(orderId);

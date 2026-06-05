@@ -72,6 +72,26 @@ public class OrdersController : ControllerBase
         return Ok(responseModel);
     }
 
+    [HttpGet("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult<OrderResponseModel>> GetById(int id)
+    {
+        int currentUserId = GetCurrentUserId();
+
+        string currentUserRole = GetCurrentUserRole();
+
+        OrderResponseDto responseDto =
+            await _orderService.GetByIdAsync(
+                id,
+                currentUserId,
+                currentUserRole);
+
+        OrderResponseModel responseModel =
+            _mapper.Map<OrderResponseModel>(responseDto);
+
+        return Ok(responseModel);
+    }
+
     [HttpPatch("{id:int}/approve")]
     [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<OrderResponseModel>> Approve(int id)
@@ -155,5 +175,17 @@ public class OrdersController : ControllerBase
         }
 
         return int.Parse(userIdValue);
+    }
+
+    private string GetCurrentUserRole()
+    {
+        string? roleValue = User.FindFirstValue(ClaimTypes.Role);
+
+        if (string.IsNullOrWhiteSpace(roleValue))
+        {
+            throw new UnauthorizedAccessException("Роль користувача не знайдено.");
+        }
+
+        return roleValue;
     }
 }

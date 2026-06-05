@@ -15,6 +15,11 @@ public interface IOrderService
 
     Task<List<OrderResponseDto>> GetOverdueAsync();
 
+    Task<OrderResponseDto> GetByIdAsync(
+        int orderId,
+        int currentUserId,
+        string currentUserRole);
+
     Task<OrderResponseDto> ApproveAsync(int orderId, int managerId);
 
     Task<OrderResponseDto> BorrowAsync(int orderId, int managerId);
