@@ -5,8 +5,8 @@ import { Typography } from '@/shared/ui/typography';
 
 import { useBooks } from './model/use-books';
 
-const horrorGenre = 'Хоррор';
-const dramaGenre = 'Романтика';
+const horrorGenre = 'Horror';
+const dramaGenre = 'Romance';
 
 const {
   books: horrorBooks,

@@ -20,9 +20,9 @@ export const useBookMedia = () => {
       link.remove();
 
       window.URL.revokeObjectURL(blobUrl);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Помилка завантаження файлу:', error);
-      alert('Не вдалося завантажити файл. Можливо, ви не авторизовані.');
+      alert(error.message);
     } finally {
       isDownloading.value = false;
     }
@@ -36,9 +36,9 @@ export const useBookMedia = () => {
         new Blob([response.data], { type: 'audio/mpeg' }),
       );
       window.open(blobUrl, '_blank');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Помилка відкриття аудіо:', error);
-      alert('Не вдалося відкрити аудіофайл.');
+      alert(error.message);
     } finally {
       isAudioOpening.value = false;
     }
