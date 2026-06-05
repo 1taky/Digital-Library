@@ -29,36 +29,57 @@ public class BookService : IBookService
         return _mapper.Map<List<BookResponseDto>>(books);
     }
 
-    public async Task<List<BookResponseDto>> GetFilteredAsync(BookFilterRequestDto request)
+    public async Task<CursorPagedResultDto<BookResponseDto>> GetFilteredAsync(
+    BookFilterRequestDto request)
+{
+    BookFormatType? parsedFormatType = null;
+
+    if (!string.IsNullOrWhiteSpace(request.FormatType))
     {
-        BookFormatType? parsedFormatType = null;
+        bool isValidFormatType = Enum.TryParse(
+            request.FormatType,
+            true,
+            out BookFormatType formatType);
 
-        if (!string.IsNullOrWhiteSpace(request.FormatType))
+        if (!isValidFormatType)
         {
-            bool isValidFormatType = Enum.TryParse(
-                request.FormatType,
-                true,
-                out BookFormatType formatType);
-
-            if (!isValidFormatType)
-            {
-                throw new BadRequestException("Неправильний формат книги.");
-            }
-
-            parsedFormatType = formatType;
+            throw new BadRequestException("Неправильний формат книги.");
         }
 
-        ValidateSortParameters(request.SortBy, request.SortDirection);
-
-        List<Book> books = await _unitOfWork.Books.GetFilteredAsync(
-            request.Search,
-            request.GenreId,
-            parsedFormatType,
-            request.SortBy,
-            request.SortDirection);
-
-        return _mapper.Map<List<BookResponseDto>>(books);
+        parsedFormatType = formatType;
     }
+
+    int pageSize = request.PageSize < 1
+        ? 10
+        : request.PageSize;
+
+    if (pageSize > 50)
+    {
+        pageSize = 50;
+    }
+
+    (List<Book> books, bool hasMore) =
+        await _unitOfWork.Books.GetFilteredByCursorAsync(
+            request.Search,
+            request.GenreName,
+            parsedFormatType,
+            request.Cursor,
+            pageSize);
+
+    List<BookResponseDto> mappedBooks =
+        _mapper.Map<List<BookResponseDto>>(books);
+
+    int? nextCursor = mappedBooks.Count == 0
+        ? null
+        : mappedBooks[^1].Id;
+
+    return new CursorPagedResultDto<BookResponseDto>
+    {
+        Items = mappedBooks,
+        NextCursor = hasMore ? nextCursor : null,
+        HasMore = hasMore
+    };
+}
 
     public async Task<BookResponseDto> GetByIdAsync(int id)
     {

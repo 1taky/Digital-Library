@@ -7,7 +7,8 @@ public interface IBookService
 {
     Task<List<BookResponseDto>> GetAllAsync();
 
-    Task<List<BookResponseDto>> GetFilteredAsync(BookFilterRequestDto request);
+    Task<CursorPagedResultDto<BookResponseDto>> GetFilteredAsync(
+        BookFilterRequestDto request);
 
     Task<BookResponseDto> GetByIdAsync(int id);
 

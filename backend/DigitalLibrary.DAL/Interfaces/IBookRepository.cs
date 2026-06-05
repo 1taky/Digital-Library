@@ -9,12 +9,12 @@ public interface IBookRepository : IGenericRepository<Book>
 
     Task<List<Book>> GetAllDetailedAsync();
 
-    Task<List<Book>> GetFilteredAsync(
+    Task<(List<Book> Items, bool HasMore)> GetFilteredByCursorAsync(
         string? search,
-        int? genreId,
+        string? genreName,
         BookFormatType? formatType,
-        string? sortBy,
-        string? sortDirection);
+        int? cursor,
+        int pageSize);
 
     Task<bool> ExistsDuplicateAsync(
         string title,

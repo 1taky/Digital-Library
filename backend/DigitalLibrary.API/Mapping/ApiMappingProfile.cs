@@ -38,5 +38,7 @@ public class ApiMappingProfile : Profile
         CreateMap<BookFormatRequestModel, BookFormatRequestDto>();
 
         CreateMap<BookFormatResponseDto, BookFormatResponseModel>();
+
+        CreateMap<BookFilterRequestModel, BookFilterRequestDto>();
     }
 }
