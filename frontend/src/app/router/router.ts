@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { HomePage, LogInPage, RegisterPage } from '@/views';
 import { useAuthStore } from '../stores';
 import { AdminDashboard } from '@/views/admin-dashboard';
+import { BookInfo } from '@/views/book-info';
 
 const routes = [
   {
@@ -30,6 +31,12 @@ const routes = [
       requiresAuth: true,
       requiresAdmin: true,
     },
+  },
+  {
+    path: '/books/:id',
+    name: 'BookDetails',
+    component: BookInfo,
+    meta: { title: 'Деталі книги' },
   },
 ];
 

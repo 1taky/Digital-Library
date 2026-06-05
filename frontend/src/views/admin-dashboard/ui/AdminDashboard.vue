@@ -2,6 +2,7 @@
 import { Section } from '@/shared/ui/section';
 import { useAdminBooks } from '../model/useAdminBooks';
 import { Container } from '@/shared/ui/container';
+import { Typography } from '@/shared/ui/typography';
 
 const {
   books,
@@ -10,6 +11,7 @@ const {
   isModalOpen,
   isEditing,
   form,
+  errorMessage,
   handleDelete,
   openAddModal,
   openEditModal,
@@ -23,20 +25,31 @@ const {
     ><Container>
       <div class="max-w-6xl mx-auto p-4 md:p-6 font-sans text-foreground">
         <header class="flex justify-between items-center mb-6">
-          <h1 class="text-2xl font-bold">Панель адміністратора</h1>
+          <Typography as="h1" weight="bold" size="lg">
+            Панель адміністратора
+          </Typography>
           <button
             @click="openAddModal"
-            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-none transition-colors"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full transition-colors cursor-pointer"
           >
             + Додати книгу
           </button>
         </header>
-
+        <Typography
+          size="sm"
+          weight="medium"
+          v-if="errorMessage"
+          class="text-red-500 p-3 mb-4"
+        >
+          {{ errorMessage }}
+        </Typography>
         <div
           v-if="isLoading"
           class="text-center text-gray-500 py-10 border border-gray-200"
         >
-          Завантаження даних...
+          <Typography size="sm" weight="medium">
+            Завантаження даних...
+          </Typography>
         </div>
 
         <div v-else class="overflow-x-auto border border-muted-background">
@@ -76,16 +89,16 @@ const {
                 <td class="p-3 border-r border-gray-200">
                   {{ book.publicationYear }}
                 </td>
-                <td class="p-3 flex justify-center gap-2">
+                <td class="py-3 flex justify-center gap-2">
                   <button
                     @click="openEditModal(book)"
-                    class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded-none border border-blue-300 transition-colors"
+                    class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded-full border border-blue-300 transition-colors cursor-pointer"
                   >
                     Редаг.
                   </button>
                   <button
                     @click="handleDelete(book.id)"
-                    class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-none border border-red-300 transition-colors"
+                    class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded-full border border-red-300 transition-colors cursor-pointer"
                   >
                     Видалити
                   </button>
@@ -109,9 +122,9 @@ const {
             class="bg-white border border-gray-400 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
           >
             <div class="p-5 border-b border-gray-300 bg-gray-50">
-              <h2 class="text-xl font-bold">
+              <Typography as="h2" weight="bold" size="md">
                 {{ isEditing ? 'Редагувати книгу' : 'Додати нову книгу' }}
-              </h2>
+              </Typography>
             </div>
 
             <form
@@ -125,7 +138,7 @@ const {
                     v-model="form.title"
                     type="text"
                     required
-                    class="border border-gray-400 p-2 rounded-none outline-none focus:border-green-600"
+                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
                   />
                 </div>
                 <div class="flex flex-col gap-1">
@@ -134,7 +147,7 @@ const {
                     v-model="form.author"
                     type="text"
                     required
-                    class="border border-gray-400 p-2 rounded-none outline-none focus:border-green-600"
+                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
                   />
                 </div>
               </div>
@@ -144,7 +157,7 @@ const {
                   <label class="text-sm font-semibold">Тип</label>
                   <select
                     v-model="form.bookType"
-                    class="border border-gray-400 p-2 rounded-none outline-none focus:border-green-600 bg-white"
+                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600 bg-white"
                   >
                     <option value="Paper">Паперова</option>
                     <option value="Electronic">Електронна</option>
@@ -153,11 +166,18 @@ const {
                 </div>
 
                 <div class="flex flex-col gap-1">
-                  <label class="text-sm font-semibold">Жанр</label>
+                  <Typography
+                    as="label"
+                    size="sm"
+                    weight="semibold"
+                    class="mt-1 mb-0.5"
+                  >
+                    Жанр
+                  </Typography>
                   <select
                     v-model="form.genreName"
                     required
-                    class="border border-gray-400 p-2 rounded-none outline-none focus:border-green-600 bg-white"
+                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600 bg-white"
                   >
                     <option value="" disabled>Оберіть жанр</option>
                     <option
@@ -173,43 +193,59 @@ const {
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="flex flex-col gap-1">
-                  <label class="text-sm font-semibold">Рік видання</label>
+                  <Typography as="label" size="sm" weight="semibold">
+                    Рік видання
+                  </Typography>
                   <input
                     v-model.number="form.publicationYear"
                     type="number"
                     required
-                    class="border border-gray-400 p-2 rounded-none outline-none focus:border-green-600"
+                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-sm font-semibold">Мова</label>
+                  <Typography as="label" size="sm" weight="semibold"
+                    >Мова</Typography
+                  >
                   <input
                     v-model="form.language"
                     type="text"
                     required
-                    class="border border-gray-400 p-2 rounded-none outline-none focus:border-green-600"
+                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-sm font-semibold">К-сть сторінок</label>
+                  <Typography as="label" size="sm" weight="semibold"
+                    >К-сть сторінок</Typography
+                  >
                   <input
                     v-model.number="form.pagesCount"
                     type="number"
                     required
-                    class="border border-gray-400 p-2 rounded-none outline-none focus:border-green-600"
+                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
                   />
                 </div>
               </div>
 
               <div class="flex flex-col gap-1">
-                <label class="text-sm font-semibold">Опис</label>
+                <Typography as="label" size="sm" weight="semibold"
+                  >Опис</Typography
+                >
                 <textarea
                   v-model="form.description"
                   rows="3"
                   required
-                  class="border border-gray-400 p-2 rounded-none outline-none focus:border-green-600 resize-y"
+                  class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600 resize-y"
                 ></textarea>
               </div>
+              <Typography
+                size="sm"
+                weight="medium"
+                v-if="errorMessage"
+                class="text-red-500 p-3 mb-4"
+              >
+                {{ errorMessage }}
+              </Typography>
 
               <div
                 class="flex justify-end gap-3 pt-4 border-t border-gray-300 mt-2"
@@ -217,13 +253,13 @@ const {
                 <button
                   type="button"
                   @click="closeModal"
-                  class="px-5 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 rounded-none transition-colors"
+                  class="px-5 py-2 border border-gray-400 text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
                 >
                   Скасувати
                 </button>
                 <button
                   type="submit"
-                  class="px-5 py-2 bg-green-600 text-white hover:bg-green-700 border border-green-700 rounded-none transition-colors"
+                  class="px-5 py-2 bg-green-600 text-white hover:bg-green-700 border border-green-700 rounded-full transition-colors cursor-pointer"
                 >
                   Зберегти
                 </button>

@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 
-export const typographyVariants = cva('!leading-none tracking-[-0.04em]', {
+export const typographyVariants = cva('!leading-none', {
   variants: {
     size: {
       lg: 'text-lg',
