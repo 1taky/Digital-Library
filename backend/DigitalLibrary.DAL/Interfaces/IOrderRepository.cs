@@ -12,5 +12,7 @@ public interface IOrderRepository : IGenericRepository<Order>
 
     Task<List<Order>> GetOverdueDetailedAsync();
 
+    Task<Order?> GetActiveByBookIdDetailedAsync(int bookId);
+
     Task<bool> HasActiveOrderForBookAsync(int bookId);
 }

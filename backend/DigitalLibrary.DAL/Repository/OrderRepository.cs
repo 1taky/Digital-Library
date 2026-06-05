@@ -52,6 +52,27 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ToListAsync();
     }
 
+    public async Task<Order?> GetActiveByBookIdDetailedAsync(int bookId)
+    {
+        return await DbSet
+            .Include(order => order.User)
+            .Include(order => order.Manager)
+            .Include(order => order.Book)
+                .ThenInclude(book => book.Genre)
+            .Include(order => order.Book)
+                .ThenInclude(book => book.Formats)
+            .Where(order =>
+                order.BookId == bookId &&
+                (
+                    order.Status == OrderStatus.Requested ||
+                    order.Status == OrderStatus.Approved ||
+                    order.Status == OrderStatus.Borrowed ||
+                    order.Status == OrderStatus.Overdue
+                ))
+            .OrderByDescending(order => order.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<bool> HasActiveOrderForBookAsync(int bookId)
     {
         return await DbSet.AnyAsync(order =>

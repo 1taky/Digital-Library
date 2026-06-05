@@ -20,6 +20,7 @@ public interface IOrderService
         int currentUserId,
         string currentUserRole);
 
+    Task<BookOrderStatusResponseDto> GetActiveOrderByBookIdAsync(int bookId);
     Task<OrderResponseDto> ApproveAsync(int orderId, int managerId);
 
     Task<OrderResponseDto> BorrowAsync(int orderId, int managerId);

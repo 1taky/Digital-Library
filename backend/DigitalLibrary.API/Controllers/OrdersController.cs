@@ -92,6 +92,20 @@ public class OrdersController : ControllerBase
         return Ok(responseModel);
     }
 
+    [HttpGet("book/{bookId:int}/active")]
+    [AllowAnonymous]
+    public async Task<ActionResult<BookOrderStatusResponseModel>> GetActiveOrderByBookId(
+    int bookId)
+    {
+        BookOrderStatusResponseDto responseDto =
+            await _orderService.GetActiveOrderByBookIdAsync(bookId);
+
+        BookOrderStatusResponseModel responseModel =
+            _mapper.Map<BookOrderStatusResponseModel>(responseDto);
+
+        return Ok(responseModel);
+    }
+
     [HttpPatch("{id:int}/approve")]
     [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<OrderResponseModel>> Approve(int id)

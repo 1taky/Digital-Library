@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     container_name: my_postgres_db
     restart: always
     environment:
@@ -11,6 +11,11 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d digital_library"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     container_name: digital_library_api
@@ -24,7 +29,8 @@ services:
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=digital_library;Username=postgres;Password=password;
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:

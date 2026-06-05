@@ -48,5 +48,7 @@ public class ApiMappingProfile : Profile
         CreateMap<UpdateUserRoleRequestModel, UpdateUserRoleRequestDto>();
 
         CreateMap<UserManagementResponseDto, UserManagementResponseModel>();
+
+        CreateMap<BookOrderStatusResponseDto, BookOrderStatusResponseModel>();
     }
 }

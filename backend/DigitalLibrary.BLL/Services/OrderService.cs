@@ -115,6 +115,53 @@ public class OrderService : IOrderService
 
         return _mapper.Map<OrderResponseDto>(order);
     }
+
+    public async Task<BookOrderStatusResponseDto> GetActiveOrderByBookIdAsync(int bookId)
+    {
+        if (bookId <= 0)
+        {
+            throw new BadRequestException("Книга є обов'язковою.");
+        }
+
+        Book? book = await _unitOfWork.Books.GetByIdDetailedAsync(bookId);
+
+        if (book == null)
+        {
+            throw new NotFoundException("Книгу не знайдено.");
+        }
+
+        Order? activeOrder = await _unitOfWork.Orders
+            .GetActiveByBookIdDetailedAsync(bookId);
+
+        if (activeOrder == null)
+        {
+            return new BookOrderStatusResponseDto
+            {
+                BookId = bookId,
+                HasActiveOrder = false,
+                OrderId = null,
+                Status = null
+            };
+        }
+
+        if (activeOrder.Status == OrderStatus.Borrowed &&
+            activeOrder.DueDate.HasValue &&
+            activeOrder.DueDate.Value < DateTime.UtcNow)
+        {
+            activeOrder.Status = OrderStatus.Overdue;
+
+            _unitOfWork.Orders.Update(activeOrder);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        return new BookOrderStatusResponseDto
+        {
+            BookId = bookId,
+            HasActiveOrder = true,
+            OrderId = activeOrder.Id,
+            Status = activeOrder.Status.ToString()
+        };
+    }
     public async Task<OrderResponseDto> ApproveAsync(int orderId, int managerId)
     {
         Order order = await GetOrderOrThrowAsync(orderId);
