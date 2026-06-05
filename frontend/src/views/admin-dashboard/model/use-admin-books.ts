@@ -36,7 +36,9 @@ export const useAdminBooks = () => {
     isLoading.value = true;
     errorMessage.value = '';
     try {
-      books.value = await fetchBooks();
+      const response = await fetchBooks({ PageSize: 50 });
+
+      books.value = response.items;
     } catch (error) {
       console.error('Помилка завантаження книг:', error);
       errorMessage.value = 'Не вдалося завантажити список книг.';
