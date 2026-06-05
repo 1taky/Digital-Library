@@ -14,7 +14,6 @@ export type BookFormatPayload = {
   durationMinutes: number;
 };
 
-// Оновлена модель книги, яку ми отримуємо з сервера (Response)
 export type Book = {
   id: number;
   title: string;
@@ -23,14 +22,13 @@ export type Book = {
   genreName: string;
   language: string;
   publicationYear: number;
-  formats: BookFormat[]; // Тепер тут масив об'єктів
+  formats: BookFormat[];
   coverUrl: string | null;
   downloadUrl: string | null;
   listenUrl: string | null;
-  createdAt: string; // Сервер повертає ISO-рядок. Можна змінити на Date, якщо ти робиш new Date() при отриманні
+  createdAt: string;
 };
 
-// Оновлений Payload для створення/редагування книги (Request)
 export type BookPayload = {
   title: string;
   author: string;
@@ -38,5 +36,15 @@ export type BookPayload = {
   genreName: string;
   language: string;
   publicationYear: number;
-  formats: BookFormatPayload[]; // Відправляємо масив форматів без id та isAvailable
+  formats: BookFormatPayload[];
+};
+
+export type UploadedFileResponse = {
+  id: number;
+  bookId: number;
+  fileName: string;
+  contentType: string;
+  fileSize: number;
+  fileCategory: string;
+  uploadedAt: string;
 };

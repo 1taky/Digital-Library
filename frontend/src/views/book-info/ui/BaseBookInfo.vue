@@ -9,8 +9,8 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
 </script>
 
 <template>
-  <Section class="mt-16"
-    ><Container>
+  <Section class="mt-16">
+    <Container>
       <div class="max-w-4xl mx-auto p-4 md:p-6 font-sans text-foreground">
         <button
           @click="goBack"
@@ -45,15 +45,16 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
             </Typography>
 
             <Typography
-              v-if="book.isAvailable"
+              v-if="book.formats?.[0]?.isAvailable"
               as="span"
               align="center"
               transform="uppercase"
               size="xs"
               weight="semibold"
               class="px-6 h-8 flex bg-green-300 items-center border-accent-dark-green/50 text-accent-dark-green border rounded-full"
-              >В наявності</Typography
             >
+              В наявності
+            </Typography>
             <Typography
               v-else
               as="span"
@@ -62,15 +63,16 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
               size="xs"
               weight="semibold"
               class="px-6 h-8 flex bg-muted/25 items-center border-muted/50 text-muted-foreground border rounded-full"
-              >Немає в наявності</Typography
             >
+              Немає в наявності
+            </Typography>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-            <!-- SUBJECT_TO_CHANGE -->
             <img
-              src="https://frecnuonna.s-ul.eu/kAbO2vrg"
-              class="col-span-2 size-100"
+              :src="book.coverUrl || 'https://frecnuonna.s-ul.eu/kAbO2vrg'"
+              class="col-span-2 size-100 object-cover"
+              alt="Обкладинка книги"
             />
             <div class="col-span-3">
               <div class="border border-gray-200 bg-gray-50 p-5 mb-6">
@@ -101,10 +103,30 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
                       size="sm"
                       weight="medium"
                       class="text-foreground"
-                      >{{ book.author }}</Typography
                     >
+                      {{ book.author }}
+                    </Typography>
                   </li>
-
+                  <li
+                    class="flex justify-between border-b border-gray-200 pb-2"
+                  >
+                    <Typography
+                      as="span"
+                      size="sm"
+                      weight="regular"
+                      class="text-muted-foreground"
+                    >
+                      Рік видання
+                    </Typography>
+                    <Typography
+                      as="span"
+                      size="sm"
+                      weight="medium"
+                      class="text-foreground"
+                    >
+                      {{ book.publicationYear }}
+                    </Typography>
+                  </li>
                   <li
                     class="flex justify-between border-b border-gray-200 pb-2"
                   >
@@ -121,9 +143,11 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
                       size="sm"
                       weight="medium"
                       class="text-foreground"
-                      >{{ book.genreName }}</Typography
                     >
+                      {{ book.genreName }}
+                    </Typography>
                   </li>
+
                   <li
                     class="flex justify-between border-b border-gray-200 pb-2"
                   >
@@ -141,9 +165,15 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
                       weight="medium"
                       class="text-foreground"
                     >
-                      {{ BOOK_TYPE[book.bookType] || book.bookType }}
+                      {{
+                        (book.formats?.[0]?.formatType &&
+                          BOOK_TYPE[book.formats[0].formatType]) ||
+                        book.formats?.[0]?.formatType ||
+                        '-'
+                      }}
                     </Typography>
                   </li>
+
                   <li
                     class="flex justify-between border-b border-gray-200 pb-2"
                   >
@@ -152,34 +182,19 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
                       size="sm"
                       weight="regular"
                       class="text-muted-foreground"
-                      >Мова</Typography
                     >
+                      Мова
+                    </Typography>
                     <Typography
                       as="span"
                       size="sm"
                       weight="medium"
                       class="text-foreground"
-                      >{{ book.language }}</Typography
                     >
+                      {{ book.language }}
+                    </Typography>
                   </li>
-                  <li
-                    class="flex justify-between border-b border-gray-200 pb-2"
-                  >
-                    <Typography
-                      as="span"
-                      size="sm"
-                      weight="regular"
-                      class="text-muted-foreground"
-                      >Рік видання</Typography
-                    >
-                    <Typography
-                      as="span"
-                      size="sm"
-                      weight="medium"
-                      class="text-foreground"
-                      >{{ book.publicationYear }}</Typography
-                    >
-                  </li>
+
                   <li
                     class="flex justify-between border-b border-gray-200 pb-2"
                   >
@@ -191,14 +206,37 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
                     >
                       Сторінок
                     </Typography>
-
                     <Typography
                       as="span"
                       size="sm"
                       weight="medium"
                       class="text-foreground"
-                      >{{ book.pagesCount || '-' }}</Typography
                     >
+                      {{ book.formats?.[0]?.pagesCount || '-' }}
+                    </Typography>
+                  </li>
+                  <li
+                    class="flex justify-between border-b border-gray-200 pb-2"
+                  >
+                    <Typography
+                      as="span"
+                      size="sm"
+                      weight="regular"
+                      class="text-muted-foreground"
+                    >
+                      Довжина (годин)
+                    </Typography>
+                    <Typography
+                      as="span"
+                      size="sm"
+                      weight="medium"
+                      class="text-foreground"
+                    >
+                      {{
+                        (book.formats?.[0]?.durationMinutes / 60).toFixed(1) ||
+                        'Не вказано'
+                      }}
+                    </Typography>
                   </li>
                 </ul>
               </div>
