@@ -21,16 +21,21 @@ export const useAdminBooks = () => {
 
   const errorMessage = ref('');
 
+  // Оновлений дефолтний стан з масивом formats
   const initialFormState: BookPayload = {
     title: '',
     author: '',
     description: '',
-    bookType: 'Paper',
     genreName: '',
     language: 'Українська',
     publicationYear: new Date().getFullYear(),
-    pagesCount: 1,
-    durationMinutes: 1,
+    formats: [
+      {
+        formatType: 'Paper',
+        pagesCount: 1,
+        durationMinutes: 0,
+      },
+    ],
   };
 
   const form = ref<BookPayload>({ ...initialFormState });
@@ -61,24 +66,33 @@ export const useAdminBooks = () => {
   const openAddModal = () => {
     isEditing.value = false;
     editingBookId.value = null;
-    form.value = { ...initialFormState };
+    // Глибоке копіювання, щоб не мутувати initialFormState
+    form.value = JSON.parse(JSON.stringify(initialFormState));
     isModalOpen.value = true;
   };
 
   const openEditModal = (book: Book) => {
     isEditing.value = true;
     editingBookId.value = book.id;
+
     form.value = {
       title: book.title,
       author: book.author,
       description: book.description,
-      bookType: book.bookType,
-      genreName: book.genreName, // Використовуємо рядок
+      genreName: book.genreName,
       language: book.language,
       publicationYear: book.publicationYear,
-      pagesCount: book.pagesCount,
-      durationMinutes: book.durationMinutes,
+      // Мапимо формати, відкидаючи id та isAvailable, як того вимагає BookPayload
+      formats:
+        book.formats && book.formats.length > 0
+          ? book.formats.map((f) => ({
+              formatType: f.formatType,
+              pagesCount: f.pagesCount,
+              durationMinutes: f.durationMinutes,
+            }))
+          : [{ formatType: 'Paper', pagesCount: 1, durationMinutes: 0 }], // Фолбек, якщо масив порожній
     };
+
     isModalOpen.value = true;
   };
 
@@ -91,7 +105,7 @@ export const useAdminBooks = () => {
       if (isEditing.value && editingBookId.value) {
         await updateBook(editingBookId.value, form.value);
       } else {
-        await createBook(form.value as BookPayload);
+        await createBook(form.value);
       }
       closeModal();
       await loadBooks();
