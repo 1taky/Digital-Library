@@ -36,7 +36,7 @@ const { filtered, searchQuery, isLoading, errorMessage } = useBooks();
             v-if="!isLoading && filtered.length > 0"
           >
             <li
-              v-for="book in filtered"
+              v-for="book in filtered.slice(0, 5)"
               :key="book.id"
               class="p-1 hover:bg-muted/20 active:bg-muted/50 transition-colors rounded-sm"
             >
@@ -54,6 +54,15 @@ const { filtered, searchQuery, isLoading, errorMessage } = useBooks();
                   >
                 </span>
               </a>
+            </li>
+            <li
+              class="p-1 py-2 hover:bg-muted/20 active:bg-muted/50 transition-colors rounded-sm"
+            >
+              <a href="/catalog"
+                ><Typography size="sm" weight="medium">
+                  > Переглянути більше в каталозі</Typography
+                ></a
+              >
             </li>
           </ul>
 
