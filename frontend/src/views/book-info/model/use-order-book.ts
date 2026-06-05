@@ -1,5 +1,5 @@
-import { ref, type Ref } from 'vue';
-import { createOrderRequest } from '@/shared';
+import { onMounted, ref, type Ref } from 'vue';
+import { createOrderRequest, fetchOrder } from '@/shared';
 
 export const useOrderBook = (bookId: Ref<number | undefined>) => {
   const isOpen = ref(false);
@@ -7,6 +7,8 @@ export const useOrderBook = (bookId: Ref<number | undefined>) => {
   const isSubmitting = ref(false);
   const errorMessage = ref('');
   const successMessage = ref('');
+
+  const hasOrder = ref(false);
 
   const openModal = () => {
     isOpen.value = true;
@@ -17,6 +19,22 @@ export const useOrderBook = (bookId: Ref<number | undefined>) => {
 
   const closeModal = () => {
     isOpen.value = false;
+  };
+
+  const checkBookOrder = async () => {
+    if (!bookId.value) return;
+
+    try {
+      const order = await fetchOrder(bookId.value);
+      hasOrder.value = !!order;
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        hasOrder.value = false;
+      } else {
+        console.error('Помилка перевірки замовлення:', error.message);
+        hasOrder.value = false;
+      }
+    }
   };
 
   const submitOrder = async () => {
@@ -51,7 +69,12 @@ export const useOrderBook = (bookId: Ref<number | undefined>) => {
     }
   };
 
+  onMounted(() => {
+    checkBookOrder();
+  });
+
   return {
+    hasOrder,
     isOpen,
     phoneNumber,
     isSubmitting,

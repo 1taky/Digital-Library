@@ -18,9 +18,10 @@ const { isAuthenticated } = useAuthStore();
 
 const bookIdForOrder = computed(() => book.value?.id);
 
-const hasPaperFormat = computed(() =>
-  book.value?.formats?.some((f) => f.formatType === 'Paper'),
+const paperFormat = computed(() =>
+  book.value?.formats?.find((f) => f.formatType === 'Paper'),
 );
+
 const hasElectronicFormat = computed(() =>
   book.value?.formats?.some((f) => f.formatType === 'Electronic'),
 );
@@ -29,6 +30,7 @@ const hasAudioFormat = computed(() =>
 );
 
 const {
+  hasOrder,
   isOpen,
   phoneNumber,
   isSubmitting,
@@ -115,15 +117,12 @@ const {
               />
 
               <button
-                v-if="
-                  isAuthenticated &&
-                  book.formats?.[0]?.isAvailable &&
-                  hasPaperFormat
-                "
+                v-if="isAuthenticated && paperFormat && paperFormat.isAvailable"
+                :disabled="hasOrder"
                 @click="openModal"
-                class="w-full px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-background font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2"
+                class="w-full px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-background font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Орендувати книгу
+                {{ hasOrder ? 'Вже замовлено' : 'Орендувати книгу' }}
               </button>
               <button
                 v-if="hasElectronicFormat && book.downloadUrl"
