@@ -78,12 +78,12 @@ public class BookService : IBookService
             request.Title,
             request.Author,
             request.Description,
-            request.GenreId,
+            request.GenreName,
             request.Language,
             request.PublicationYear,
             request.Formats);
 
-        Genre? genre = await _unitOfWork.Genres.GetByIdAsync(request.GenreId);
+        Genre? genre = await _unitOfWork.Genres.GetByNameAsync(request.GenreName);
 
         if (genre == null)
         {
@@ -103,6 +103,7 @@ public class BookService : IBookService
 
         Book book = _mapper.Map<Book>(request);
 
+        book.GenreId = genre.Id;
         book.CreatedAt = DateTime.UtcNow;
 
         await _unitOfWork.Books.AddAsync(book);
@@ -120,7 +121,7 @@ public class BookService : IBookService
             request.Title,
             request.Author,
             request.Description,
-            request.GenreId,
+            request.GenreName,
             request.Language,
             request.PublicationYear,
             request.Formats);
@@ -132,7 +133,7 @@ public class BookService : IBookService
             throw new NotFoundException("Книгу не знайдено.");
         }
 
-        Genre? genre = await _unitOfWork.Genres.GetByIdAsync(request.GenreId);
+        Genre? genre = await _unitOfWork.Genres.GetByNameAsync(request.GenreName);
 
         if (genre == null)
         {
@@ -145,8 +146,7 @@ public class BookService : IBookService
             request.Language,
             request.PublicationYear);
 
-        if (duplicateExists &&
-            !IsSameBook(book, request))
+        if (duplicateExists && !IsSameBook(book, request))
         {
             throw new BadRequestException("Інша книга з такими даними вже існує.");
         }
@@ -154,7 +154,7 @@ public class BookService : IBookService
         book.Title = request.Title.Trim();
         book.Author = request.Author.Trim();
         book.Description = request.Description.Trim();
-        book.GenreId = request.GenreId;
+        book.GenreId = genre.Id;
         book.Language = request.Language.Trim();
         book.PublicationYear = request.PublicationYear;
 
@@ -183,8 +183,8 @@ public class BookService : IBookService
     }
 
     private static bool IsSameBook(
-        Book book,
-        UpdateBookRequestDto request)
+    Book book,
+    UpdateBookRequestDto request)
     {
         return string.Equals(book.Title.Trim(), request.Title.Trim(), StringComparison.OrdinalIgnoreCase) &&
                string.Equals(book.Author.Trim(), request.Author.Trim(), StringComparison.OrdinalIgnoreCase) &&
@@ -216,13 +216,13 @@ public class BookService : IBookService
     }
 
     private static void ValidateBookRequest(
-        string title,
-        string author,
-        string description,
-        int genreId,
-        string language,
-        int publicationYear,
-        List<BookFormatRequestDto> formats)
+    string title,
+    string author,
+    string description,
+    string genreName,
+    string language,
+    int publicationYear,
+    List<BookFormatRequestDto> formats)
     {
         if (string.IsNullOrWhiteSpace(title))
         {
@@ -239,7 +239,7 @@ public class BookService : IBookService
             throw new BadRequestException("Опис книги є обов'язковим.");
         }
 
-        if (genreId <= 0)
+        if (string.IsNullOrWhiteSpace(genreName))
         {
             throw new BadRequestException("Жанр книги є обов'язковим.");
         }
