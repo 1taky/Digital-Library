@@ -17,6 +17,11 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
   return response.data;
 };
 
+export const fetchOrder = async (id: number): Promise<Order> => {
+  const response = await apiClient.get<Order>(`/orders/${id}`);
+  return response.data;
+};
+
 export const fetchOverdueOrders = async (): Promise<Order[]> => {
   const response = await apiClient.get<Order[]>('/orders/overdue');
   return response.data;
