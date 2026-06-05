@@ -7,7 +7,8 @@ import { Typography } from '@/shared/ui/typography';
 import ShowPassword from '@/shared/icons/show-password/ui/ShowPassword.vue';
 import ShowPasswordActive from '@/shared/icons/show-password/ui/ShowPasswordActive.vue';
 
-const { fullName, email, password, isLoading, errorMessage, handleSubmit } = useRegister();
+const { fullName, email, password, isLoading, errorMessage, handleSubmit } =
+  useRegister();
 
 const confirmPassword = ref('');
 const confirmPasswordError = ref('');
@@ -28,11 +29,20 @@ const onSubmit = () => {
   <Section class="mt-20">
     <Container>
       <div class="max-w-md mx-auto bg-white rounded-2xl shadow-md p-8">
-        <Typography as="h1" weight="bold" size="lg" align="center" class="text-gray-800 mb-6">
+        <Typography
+          as="h1"
+          weight="bold"
+          size="lg"
+          align="center"
+          class="text-gray-800 mb-6"
+        >
           Реєстрація
         </Typography>
 
-        <p v-if="errorMessage" class="text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+        <p
+          v-if="errorMessage"
+          class="text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg p-3 mb-4"
+        >
           {{ errorMessage }}
         </p>
 
@@ -81,19 +91,24 @@ const onSubmit = () => {
                 placeholder="••••••••"
                 class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-100 transition"
               />
-             <button
-  type="button"
-  @click="showConfirmPassword = !showConfirmPassword"
-  class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted-foreground transition"
->
-  <ShowPasswordActive v-if="!showConfirmPassword"/>
-  <ShowPassword v-else />
-</button>
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted-foreground transition"
+              >
+                <ShowPasswordActive v-if="!showPassword" />
+                <ShowPassword v-else />
+              </button>
             </div>
           </div>
 
           <div class="flex flex-col gap-1">
-            <Typography as="label" for="confirmPassword" weight="medium" size="sm">
+            <Typography
+              as="label"
+              for="confirmPassword"
+              weight="medium"
+              size="sm"
+            >
               Підтвердіть пароль
             </Typography>
             <div class="relative">
@@ -105,20 +120,27 @@ const onSubmit = () => {
                 :disabled="isLoading"
                 placeholder="••••••••"
                 class="w-full border rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 disabled:bg-gray-100 transition"
-                :class="confirmPasswordError ? 'border-red-400 focus:ring-red-300' : 'border-gray-300 focus:ring-blue-400'"
-              
-                />
-                    <button
+                :class="
+                  confirmPasswordError
+                    ? 'border-red-400 focus:ring-red-300'
+                    : 'border-gray-300 focus:ring-blue-400'
+                "
+              />
+              <button
                 type="button"
-                @click="showPassword = !showPassword"
+                @click="showConfirmPassword = !showConfirmPassword"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted-foreground transition"
               >
-              <ShowPasswordActive v-if="!showPassword"/>
-              <ShowPassword  v-else  />
-                
+                <ShowPasswordActive v-if="!showConfirmPassword" />
+                <ShowPassword v-else />
               </button>
             </div>
-            <Typography v-if="confirmPasswordError" as="p" size="sm" class="text-red-500 mt-1">
+            <Typography
+              v-if="confirmPasswordError"
+              as="p"
+              size="sm"
+              class="text-red-500 mt-1"
+            >
               {{ confirmPasswordError }}
             </Typography>
           </div>
