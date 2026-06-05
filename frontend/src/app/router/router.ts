@@ -5,6 +5,7 @@ import { AdminDashboard } from '@/views/admin-dashboard';
 import { BookInfo } from '@/views/book-info';
 import CatalogPage from '@/views/catalog/CatalogPage.vue';
 import OrdersPage from '@/views/order/ui/OrdersPage.vue';
+import { AdminUsersPage } from '@/views/admin-users';
 
 const routes = [
   {
@@ -47,6 +48,15 @@ const routes = [
     meta: {
       requiresAuth: true,
       allowedRoles: ['Admin', 'Manager'],
+    },
+  },
+  {
+    path: '/admin/users',
+    name: 'Admin Users',
+    component: AdminUsersPage,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['Admin'],
     },
   },
   {

@@ -20,7 +20,7 @@ const { books, genres, filters, isLoading, isFetchingMore, hasMore, loadMore } =
     </Typography>
 
     <div class="flex flex-col md:flex-row gap-6">
-      <aside class="w-full md:w-1/4 flex-shrink-0">
+      <aside class="w-full md:w-1/4 shrink-0">
         <CatalogFiltersComponent :filters="filters" :genres="genres" />
       </aside>
 

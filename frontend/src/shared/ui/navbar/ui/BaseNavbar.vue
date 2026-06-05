@@ -71,6 +71,16 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
             Замовлення
           </Typography>
         </a>
+        <a v-if="authStore.currentRole === 'Admin'" href="/admin/users">
+          <Typography
+            size="sm"
+            weight="medium"
+            :class="actionClassname"
+            class="select-none cursor-pointer"
+          >
+            Користувачі
+          </Typography>
+        </a>
       </div>
       <a @click="handleLogout">
         <Typography
