@@ -14,7 +14,7 @@ const showPassword = ref(false);
 <template>
   <Section class="mt-20">
     <Container>
-      <div class="max-w-md mx-auto bg-muted/2 rounded-2xl shadow-md p-8">
+      <div class="max-w-md mx-auto bg-white rounded-2xl shadow-md p-8">
         <Typography
           as="h2"
           weight="bold"
@@ -76,8 +76,9 @@ const showPassword = ref(false);
                 @click="showPassword = !showPassword"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted-foreground transition"
               >
-                <ShowPassword v-if="!showPassword" />
-                <ShowPasswordActive v-else />
+               <ShowPasswordActive v-if="!showPassword"/>
+              <ShowPassword  v-else  />
+                
               </button>
             </div>
           </div>
@@ -85,7 +86,7 @@ const showPassword = ref(false);
           <button
             type="submit"
             :disabled="isLoading"
-            class="bg-accent-dark-green/90 hover:bg-accent-dark-green active:bg-accent-dark-green/80 mt-2 text-background font-semibold rounded-lg py-2 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            class="bg-accent-dark-green/90 hover:bg-accent-dark-green active:bg-accent-dark-green/80 mt-2 text-background font-semibold rounded-full py-2 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {{ isLoading ? 'Зачекайте...' : 'Увійти' }}
           </button>
