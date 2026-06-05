@@ -36,7 +36,7 @@ const routes = [
     component: AdminDashboard,
     meta: {
       requiresAuth: true,
-      requiresAdmin: true,
+      allowedRoles: ['Admin', 'Manager'],
     },
   },
   {
@@ -67,8 +67,13 @@ router.beforeEach(async (to, _, next) => {
       return next('/log-in');
     }
 
-    if (to.meta.requiresAdmin && authStore.user?.role !== 'Admin') {
-      return next('/');
+    if (to.meta.allowedRoles) {
+      const userRole = authStore.user?.role;
+      const roles = to.meta.allowedRoles as string[];
+
+      if (!userRole || !roles.includes(userRole)) {
+        return next('/');
+      }
     }
   }
 

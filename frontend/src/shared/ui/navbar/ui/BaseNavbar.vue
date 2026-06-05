@@ -46,7 +46,10 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
       <div
         :class="sideClassName"
         class="gap-4"
-        v-if="authStore.currentRole === 'Admin'"
+        v-if="
+          authStore.currentRole === 'Manager' ||
+          authStore.currentRole === 'Admin'
+        "
       >
         <a href="/admin/panel">
           <Typography
