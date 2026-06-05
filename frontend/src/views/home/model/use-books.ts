@@ -1,7 +1,7 @@
 import { fetchBooks, type Book } from '@/shared';
 import { onMounted, ref } from 'vue';
 
-export const useBooks = () => {
+export const useBooks = (genreName: string) => {
   const books = ref<Book[]>([]);
 
   const isLoading = ref(false);
@@ -14,12 +14,12 @@ export const useBooks = () => {
     try {
       const response = await fetchBooks({
         PageSize: 5,
-        // GenreName: genre,
+        GenreName: genreName,
       });
 
       books.value = response.items;
     } catch (error: any) {
-      errorMessage.value = 'Не вдалося завантажити книги';
+      errorMessage.value = error.message || 'Не вдалося завантажити книги';
       console.error(error);
     } finally {
       isLoading.value = false;
@@ -29,5 +29,10 @@ export const useBooks = () => {
   onMounted(() => {
     loadBooks();
   });
-  return { books };
+
+  return {
+    books,
+    isLoading,
+    errorMessage,
+  };
 };

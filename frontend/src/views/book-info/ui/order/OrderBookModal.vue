@@ -24,7 +24,7 @@ const emit = defineEmits<{
     @click.self="emit('close')"
   >
     <div
-      class="bg-background border border-gray-400 w-full max-w-128 p-8 rounded-md shadow-lg"
+      class="bg-background border border-gray-400 w-full max-w-lg p-8 rounded-md shadow-lg"
     >
       <Typography as="h3" weight="bold" size="lg" class="mb-3">
         Оренда паперової книги

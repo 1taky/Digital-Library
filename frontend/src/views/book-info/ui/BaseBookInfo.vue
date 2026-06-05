@@ -10,15 +10,27 @@ import { BOOK_TYPE } from '../lib/dictionary';
 import OrderBookModal from './order/OrderBookModal.vue';
 import { useOrderBook } from '../model/use-order-book';
 import { useAuthStore } from '@/app/stores/auth.ts';
+import { useBookMedia } from '../model/use-book-media.ts';
 
 const { book, isLoading, errorMessage, goBack } = useBookDetails();
-const hasPaperFormat = computed(() =>
-  book.value?.formats?.some((f) => f.formatType === 'Paper'),
-);
+
 const { isAuthenticated } = useAuthStore();
+
 const bookIdForOrder = computed(() => book.value?.id);
 
+const paperFormat = computed(() =>
+  book.value?.formats?.find((f) => f.formatType === 'Paper'),
+);
+
+const hasElectronicFormat = computed(() =>
+  book.value?.formats?.some((f) => f.formatType === 'Electronic'),
+);
+const hasAudioFormat = computed(() =>
+  book.value?.formats?.some((f) => f.formatType === 'Audio'),
+);
+
 const {
+  hasOrder,
   isOpen,
   phoneNumber,
   isSubmitting,
@@ -28,6 +40,12 @@ const {
   closeModal,
   submitOrder,
 } = useOrderBook(bookIdForOrder);
+const {
+  isDownloading,
+  isAudioOpening,
+  downloadFileWithAuth,
+  listenAudioWithAuth,
+} = useBookMedia();
 </script>
 
 <template>
@@ -99,15 +117,29 @@ const {
               />
 
               <button
-                v-if="
-                  isAuthenticated &&
-                  book.formats?.[0]?.isAvailable &&
-                  hasPaperFormat
-                "
+                v-if="isAuthenticated && paperFormat && paperFormat.isAvailable"
+                :disabled="hasOrder"
                 @click="openModal"
-                class="w-full px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-background font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2"
+                class="w-full px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-background font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Орендувати книгу
+                {{ hasOrder ? 'Вже замовлено' : 'Орендувати книгу' }}
+              </button>
+              <button
+                v-if="hasElectronicFormat && book.downloadUrl"
+                @click="downloadFileWithAuth(book.downloadUrl, book.title)"
+                :disabled="isDownloading"
+                class="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2 disabled:opacity-75 disabled:cursor-wait"
+              >
+                {{ isDownloading ? 'Завантаження...' : 'Завантажити файл' }}
+              </button>
+
+              <button
+                v-if="hasAudioFormat && book.listenUrl"
+                @click="listenAudioWithAuth(book.listenUrl)"
+                :disabled="isAudioOpening"
+                class="w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2 disabled:opacity-75 disabled:cursor-wait"
+              >
+                {{ isAudioOpening ? 'Відкриття...' : 'Слухати аудіо' }}
               </button>
             </div>
 
