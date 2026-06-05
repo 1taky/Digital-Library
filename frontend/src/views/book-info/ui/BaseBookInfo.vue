@@ -1,11 +1,33 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import { Container } from '@/shared/ui/container';
-import { useBookDetails } from '../model/use-book-details';
 import { Section } from '@/shared/ui/section';
 import { Typography } from '@/shared/ui/typography';
+
+import { useBookDetails } from '../model/use-book-details';
 import { BOOK_TYPE } from '../lib/dictionary';
+import OrderBookModal from './order/OrderBookModal.vue';
+import { useOrderBook } from '../model/use-order-book';
+import { useAuthStore } from '@/app/stores/auth.ts';
 
 const { book, isLoading, errorMessage, goBack } = useBookDetails();
+const hasPaperFormat = computed(() =>
+  book.value?.formats?.some((f) => f.formatType === 'Paper'),
+);
+const { isAuthenticated } = useAuthStore();
+const bookIdForOrder = computed(() => book.value?.id);
+
+const {
+  isOpen,
+  phoneNumber,
+  isSubmitting,
+  errorMessage: orderErrorMessage,
+  successMessage,
+  openModal,
+  closeModal,
+  submitOrder,
+} = useOrderBook(bookIdForOrder);
 </script>
 
 <template>
@@ -69,11 +91,26 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-            <img
-              :src="book.coverUrl || 'https://frecnuonna.s-ul.eu/kAbO2vrg'"
-              class="col-span-2 size-100 object-cover"
-              alt="Обкладинка книги"
-            />
+            <div class="col-span-2 flex flex-col gap-4">
+              <img
+                :src="book.coverUrl || ''"
+                class="w-full aspect-2/3 object-cover rounded-md border border-gray-200"
+                alt="Обкладинка книги"
+              />
+
+              <button
+                v-if="
+                  isAuthenticated &&
+                  book.formats?.[0]?.isAvailable &&
+                  hasPaperFormat
+                "
+                @click="openModal"
+                class="w-full px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-background font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2"
+              >
+                Орендувати книгу
+              </button>
+            </div>
+
             <div class="col-span-3">
               <div class="border border-gray-200 bg-gray-50 p-5 mb-6">
                 <Typography
@@ -166,10 +203,13 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
                       class="text-foreground"
                     >
                       {{
-                        (book.formats?.[0]?.formatType &&
-                          BOOK_TYPE[book.formats[0].formatType]) ||
-                        book.formats?.[0]?.formatType ||
-                        '-'
+                        book.formats?.length
+                          ? book.formats
+                              .map(
+                                (f) => BOOK_TYPE[f.formatType] || f.formatType,
+                              )
+                              .join(', ')
+                          : '-'
                       }}
                     </Typography>
                   </li>
@@ -262,6 +302,18 @@ const { book, isLoading, errorMessage, goBack } = useBookDetails();
             </div>
           </div>
         </div>
+
+        <OrderBookModal
+          v-if="book"
+          :is-open="isOpen"
+          :book-title="book.title"
+          :is-submitting="isSubmitting"
+          :error-message="orderErrorMessage"
+          :success-message="successMessage"
+          v-model:phone-number="phoneNumber"
+          @close="closeModal"
+          @submit="submitOrder"
+        />
       </div>
     </Container>
   </Section>
