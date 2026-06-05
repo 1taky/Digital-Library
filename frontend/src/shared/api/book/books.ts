@@ -2,17 +2,17 @@ import { apiClient } from '../instance/instance';
 import type {
   Book,
   BookPayload,
-  BookType,
+  FetchBooksParams,
+  PaginatedBooksResponse,
   UploadedFileResponse,
 } from './types/book';
 
-export const fetchBooks = async (params?: BookType): Promise<Book[]> => {
-  const response = await apiClient.get<Book[]>('/books', {
-    params: {
-      genreName: params || undefined,
-    },
+export const fetchBooks = async (
+  params?: FetchBooksParams,
+): Promise<PaginatedBooksResponse> => {
+  const response = await apiClient.get<PaginatedBooksResponse>('/books', {
+    params,
   });
-
   return response.data;
 };
 

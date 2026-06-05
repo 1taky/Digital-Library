@@ -22,7 +22,7 @@ const { filtered, searchQuery, isLoading, errorMessage } = useBooks();
       </div>
 
       <div
-        class="absolute top-0 left-0 w-full flex bg-muted-background/50 rounded-2xl -z-10"
+        class="absolute top-0 left-0 w-full flex bg-muted-background rounded-2xl -z-10"
         v-if="searchQuery.trim() !== ''"
       >
         <div class="pt-11 px-6 pb-4 w-full">
@@ -35,17 +35,24 @@ const { filtered, searchQuery, isLoading, errorMessage } = useBooks();
             class="flex flex-col gap-2"
             v-if="!isLoading && filtered.length > 0"
           >
-            <li v-for="book in filtered" :key="book.id">
+            <li
+              v-for="book in filtered"
+              :key="book.id"
+              class="p-1 hover:bg-muted/20 active:bg-muted/50 transition-colors rounded-sm"
+            >
               <a
                 :href="`/books/${book.id}`"
-                class="flex flex-row items-baseline gap-2"
+                class="grid grid-cols-10 gap-4 items-center"
               >
-                <Typography size="sm" weight="medium">{{
-                  book.title
-                }}</Typography>
-                <Typography size="xs" weight="regular" class="text-muted">
-                  {{ book.publicationYear }}</Typography
-                >
+                <img :src="`${book.coverUrl}`" class="h-12 grid-cols-1" />
+                <span class="flex flex-row items-baseline gap-2">
+                  <Typography size="sm" weight="medium">{{
+                    book.title
+                  }}</Typography>
+                  <Typography size="xs" weight="regular" class="text-muted">
+                    {{ book.publicationYear }}</Typography
+                  >
+                </span>
               </a>
             </li>
           </ul>

@@ -21,7 +21,9 @@ export const useBooks = () => {
     errorMessage.value = '';
 
     try {
-      books.value = await fetchBooks();
+      const response = await fetchBooks({ PageSize: 50 });
+
+      books.value = response.items;
     } catch (error: any) {
       errorMessage.value = 'Не вдалося завантажити жанри';
       console.error(error);

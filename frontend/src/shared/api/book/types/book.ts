@@ -48,3 +48,17 @@ export type UploadedFileResponse = {
   fileCategory: string;
   uploadedAt: string;
 };
+
+export type PaginatedBooksResponse = {
+  items: Book[];
+  nextCursor: number | null;
+  hasMore: boolean;
+};
+
+export type FetchBooksParams = {
+  Search?: string;
+  GenreName?: string;
+  FormatType?: string;
+  Cursor?: number;
+  PageSize?: number;
+};
