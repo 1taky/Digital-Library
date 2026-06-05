@@ -82,5 +82,23 @@ public class BllMappingProfile : Profile
                 src.Files.Any(file => file.FileCategory == FileCategory.EBook)))
             .ForMember(dest => dest.HasAudioFile, opt => opt.MapFrom(src =>
                 src.Files.Any(file => file.FileCategory == FileCategory.Audio)));
+
+        CreateMap<Order, OrderResponseDto>()
+            .ForMember(
+                destination => destination.BookTitle,
+                options => options.MapFrom(source => source.Book.Title))
+            .ForMember(
+                destination => destination.UserFullName,
+                options => options.MapFrom(source => source.User.FullName))
+            .ForMember(
+                destination => destination.UserEmail,
+                options => options.MapFrom(source => source.User.Email))
+            .ForMember(
+                destination => destination.Status,
+                options => options.MapFrom(source => source.Status.ToString()))
+            .ForMember(
+                destination => destination.ManagerFullName,
+                options => options.MapFrom(source =>
+                    source.Manager == null ? null : source.Manager.FullName));
     }
 }

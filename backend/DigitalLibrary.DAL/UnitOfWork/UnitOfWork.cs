@@ -15,18 +15,22 @@ public class UnitOfWork : IUnitOfWork
 
     public IBookFileRepository BookFiles { get; }
 
+    public IOrderRepository Orders { get; }
+
     public UnitOfWork(
         DigitalLibraryDbContext context,
         IUserRepository users,
         IGenreRepository genres,
         IBookRepository books,
-        IBookFileRepository bookFiles)
+        IBookFileRepository bookFiles,
+        IOrderRepository orders)
     {
         _context = context;
         Users = users;
         Genres = genres;
         Books = books;
         BookFiles = bookFiles;
+        Orders = orders;
     }
 
     public async Task<int> SaveChangesAsync()

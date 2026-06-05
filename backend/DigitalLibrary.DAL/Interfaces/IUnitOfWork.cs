@@ -10,5 +10,7 @@ public interface IUnitOfWork
 
     IBookFileRepository BookFiles { get; }
 
+    IOrderRepository Orders { get; }
+
     Task<int> SaveChangesAsync();
 }
