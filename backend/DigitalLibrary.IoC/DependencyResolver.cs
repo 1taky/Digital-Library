@@ -53,7 +53,27 @@ public class DependencyResolver : Module
         builder.RegisterType<JwtService>()
             .As<IJwtService>()
             .InstancePerLifetimeScope();
+        
+        builder.RegisterType<GenreService>()
+            .As<IGenreService>()
+            .InstancePerLifetimeScope();
+        
+        builder.RegisterType<BookService>()
+            .As<IBookService>()
+            .InstancePerLifetimeScope();
 
+        builder.RegisterType<BookFileService>()
+            .As<IBookFileService>()
+            .InstancePerLifetimeScope();
+        
+        builder.RegisterType<OrderService>()
+            .As<IOrderService>()
+            .InstancePerLifetimeScope();
+        
+        builder.RegisterType<UserService>()
+            .As<IUserService>()
+            .InstancePerLifetimeScope();
+        
         builder.RegisterType<DatabaseInitializer>()
             .AsSelf()
             .InstancePerLifetimeScope();
@@ -62,32 +82,16 @@ public class DependencyResolver : Module
             .As<IGenreRepository>()
             .InstancePerLifetimeScope();
 
-        builder.RegisterType<GenreService>()
-            .As<IGenreService>()
-            .InstancePerLifetimeScope();
-
         builder.RegisterType<BookRepository>()
             .As<IBookRepository>()
-            .InstancePerLifetimeScope();
-
-        builder.RegisterType<BookService>()
-            .As<IBookService>()
             .InstancePerLifetimeScope();
 
         builder.RegisterType<BookFileRepository>()
             .As<IBookFileRepository>()
             .InstancePerLifetimeScope();
 
-        builder.RegisterType<BookFileService>()
-            .As<IBookFileService>()
-            .InstancePerLifetimeScope();
-
         builder.RegisterType<OrderRepository>()
             .As<IOrderRepository>()
-            .InstancePerLifetimeScope();
-
-        builder.RegisterType<OrderService>()
-            .As<IOrderService>()
             .InstancePerLifetimeScope();
     }
 }
