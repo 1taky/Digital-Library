@@ -22,7 +22,7 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
 
 <template>
   <nav :class="className">
-    <div :class="sideClassName" class="gap-6">
+    <div :class="sideClassName" class="gap-4">
       <a href="/">
         <Typography size="sm" weight="bold">EBooks</Typography>
       </a>
@@ -32,9 +32,14 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
           Каталог
         </Typography>
       </a>
-      <SearchBar />
     </div>
-    <div :class="sideClassName" class="gap-4" v-if="authStore.isAuthenticated">
+    <SearchBar />
+
+    <div
+      :class="sideClassName"
+      class="gap-4 shrink-0"
+      v-if="authStore.isAuthenticated"
+    >
       <Typography size="sm" weight="medium">{{
         authStore.user?.fullName
       }}</Typography>
