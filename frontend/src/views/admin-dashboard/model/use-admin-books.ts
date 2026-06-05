@@ -13,8 +13,13 @@ import type { GenreType } from '@/shared/types/genre';
 export const useAdminBooks = () => {
   const books = ref<Book[]>([]);
   const genres = ref<GenreType[]>([]);
+
   const isLoading = ref(false);
+  const isFetchingMore = ref(false);
   const errorMessage = ref('');
+
+  const nextCursor = ref<number | null>(null);
+  const hasMore = ref(false);
 
   const isModalOpen = ref(false);
   const isEditing = ref(false);
@@ -32,18 +37,42 @@ export const useAdminBooks = () => {
 
   const form = ref<BookPayload>(getInitialFormState());
 
-  const loadBooks = async () => {
-    isLoading.value = true;
-    errorMessage.value = '';
-    try {
-      const response = await fetchBooks({ PageSize: 50 });
+  const loadBooks = async (reset = true) => {
+    if (reset) {
+      isLoading.value = true;
+      nextCursor.value = null;
+    } else {
+      isFetchingMore.value = true;
+    }
 
-      books.value = response.items;
+    errorMessage.value = '';
+
+    try {
+      const response = await fetchBooks({
+        PageSize: 100,
+        Cursor: nextCursor.value !== null ? nextCursor.value : undefined,
+      });
+
+      if (reset) {
+        books.value = response.items;
+      } else {
+        books.value.push(...response.items);
+      }
+
+      nextCursor.value = response.nextCursor;
+      hasMore.value = response.hasMore;
     } catch (error) {
       console.error('Помилка завантаження книг:', error);
       errorMessage.value = 'Не вдалося завантажити список книг.';
     } finally {
       isLoading.value = false;
+      isFetchingMore.value = false;
+    }
+  };
+
+  const loadMore = () => {
+    if (hasMore.value && !isFetchingMore.value) {
+      loadBooks(false);
     }
   };
 
@@ -58,10 +87,9 @@ export const useAdminBooks = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('Ви впевнені, що хочете видалити цю книгу? Дія незворотня.'))
       return;
-
     try {
       await deleteBook(id);
-      await loadBooks();
+      await loadBooks(true);
     } catch (error: any) {
       console.error('Помилка видалення:', error);
       errorMessage.value =
@@ -98,7 +126,6 @@ export const useAdminBooks = () => {
             }))
           : [{ formatType: 'Paper', pagesCount: 1, durationMinutes: 0 }],
     };
-
     isModalOpen.value = true;
   };
 
@@ -115,7 +142,7 @@ export const useAdminBooks = () => {
         await createBook(form.value);
       }
       closeModal();
-      await loadBooks();
+      await loadBooks(true);
     } catch (error: any) {
       console.error('Помилка збереження:', error);
       errorMessage.value =
@@ -124,7 +151,7 @@ export const useAdminBooks = () => {
   };
 
   onMounted(() => {
-    loadBooks();
+    loadBooks(true);
     loadGenres();
   });
 
@@ -132,11 +159,14 @@ export const useAdminBooks = () => {
     books,
     genres,
     isLoading,
+    isFetchingMore,
+    hasMore,
     isModalOpen,
     isEditing,
     form,
     errorMessage,
     loadBooks,
+    loadMore,
     handleDelete,
     openAddModal,
     openEditModal,

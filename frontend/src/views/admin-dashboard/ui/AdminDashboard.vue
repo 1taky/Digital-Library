@@ -17,6 +17,11 @@ const {
   isEditing,
   form,
   errorMessage,
+
+  hasMore,
+  isFetchingMore,
+  loadMore,
+
   loadBooks,
   handleDelete,
   openAddModal,
@@ -68,6 +73,16 @@ const closeFileManager = () => {
           @manage-files="openFileManager"
           @delete="handleDelete"
         />
+
+        <div v-if="hasMore" class="flex justify-center mt-6 mb-4">
+          <button
+            @click="loadMore"
+            :disabled="isFetchingMore"
+            class="cursor-pointer bg-background border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 rounded-full font-medium transition-colors disabled:opacity-50 disabled:cursor-wait flex items-center gap-2"
+          >
+            {{ isFetchingMore ? 'Завантаження...' : 'Завантажити ще' }}
+          </button>
+        </div>
 
         <BookFormModal
           :isOpen="isModalOpen"
