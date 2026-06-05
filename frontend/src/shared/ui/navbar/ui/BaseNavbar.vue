@@ -61,6 +61,16 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
             Адм. Панель
           </Typography>
         </a>
+        <a href="/admin/orders">
+          <Typography
+            size="sm"
+            weight="medium"
+            :class="actionClassname"
+            class="select-none cursor-pointer"
+          >
+            Замовлення
+          </Typography>
+        </a>
       </div>
       <a @click="handleLogout">
         <Typography

@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores';
 import { AdminDashboard } from '@/views/admin-dashboard';
 import { BookInfo } from '@/views/book-info';
 import CatalogPage from '@/views/catalog/CatalogPage.vue';
+import OrdersPage from '@/views/order/ui/OrdersPage.vue';
 
 const routes = [
   {
@@ -34,6 +35,15 @@ const routes = [
     path: '/admin/panel',
     name: 'Admin Panel',
     component: AdminDashboard,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['Admin', 'Manager'],
+    },
+  },
+  {
+    path: '/admin/orders',
+    name: 'Admin Orders',
+    component: OrdersPage,
     meta: {
       requiresAuth: true,
       allowedRoles: ['Admin', 'Manager'],
