@@ -10,3 +10,6 @@ export * from '@/shared/api/genre/genres';
 
 export * from '@/shared/api/book/books';
 export * from '@/shared/api/book/types/book';
+
+export * from '@/shared/api/order/types/order';
+export * from '@/shared/api/order/orders';
