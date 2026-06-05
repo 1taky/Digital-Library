@@ -21,7 +21,6 @@ export const useAdminBooks = () => {
 
   const errorMessage = ref('');
 
-  // Оновлений дефолтний стан з масивом formats
   const initialFormState: BookPayload = {
     title: '',
     author: '',
@@ -66,7 +65,6 @@ export const useAdminBooks = () => {
   const openAddModal = () => {
     isEditing.value = false;
     editingBookId.value = null;
-    // Глибоке копіювання, щоб не мутувати initialFormState
     form.value = JSON.parse(JSON.stringify(initialFormState));
     isModalOpen.value = true;
   };
@@ -82,7 +80,6 @@ export const useAdminBooks = () => {
       genreName: book.genreName,
       language: book.language,
       publicationYear: book.publicationYear,
-      // Мапимо формати, відкидаючи id та isAvailable, як того вимагає BookPayload
       formats:
         book.formats && book.formats.length > 0
           ? book.formats.map((f) => ({
@@ -90,7 +87,7 @@ export const useAdminBooks = () => {
               pagesCount: f.pagesCount,
               durationMinutes: f.durationMinutes,
             }))
-          : [{ formatType: 'Paper', pagesCount: 1, durationMinutes: 0 }], // Фолбек, якщо масив порожній
+          : [{ formatType: 'Paper', pagesCount: 1, durationMinutes: 0 }],
     };
 
     isModalOpen.value = true;

@@ -68,6 +68,11 @@ const {
                 <th class="p-3 font-semibold border-r border-gray-200">Жанр</th>
                 <th class="p-3 font-semibold border-r border-gray-200">Тип</th>
                 <th class="p-3 font-semibold border-r border-gray-200">Рік</th>
+                <th class="p-3 font-semibold border-r border-gray-200">Мова</th>
+                <th class="p-3 font-semibold border-r border-gray-200">
+                  Сторінок
+                </th>
+
                 <th class="p-3 font-semibold text-center">Дії</th>
               </tr>
             </thead>
@@ -91,12 +96,18 @@ const {
                 <td class="p-3 border-r border-gray-200">
                   {{ book.publicationYear }}
                 </td>
+                <td class="p-3 border-r border-gray-200">
+                  {{ book.language }}
+                </td>
+                <td class="p-3 border-r border-gray-200">
+                  {{ book.formats[0].pagesCount }}
+                </td>
                 <td class="py-3 flex justify-center gap-2">
                   <button
                     @click="openEditModal(book)"
                     class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded-full border border-blue-300 transition-colors cursor-pointer"
                   >
-                    Редаг.
+                    Змінити
                   </button>
                   <button
                     @click="handleDelete(book.id)"
@@ -193,7 +204,7 @@ const {
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
                   <Typography as="label" size="sm" weight="semibold">
                     Рік видання
@@ -216,12 +227,25 @@ const {
                     class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
                   />
                 </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
                   <Typography as="label" size="sm" weight="semibold"
-                    >К-сть сторінок</Typography
+                    >Сторінок</Typography
                   >
                   <input
                     v-model.number="form.formats[0].pagesCount"
+                    type="number"
+                    required
+                    class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <Typography as="label" size="sm" weight="semibold"
+                    >Тривалість (в хв.)</Typography
+                  >
+                  <input
+                    v-model.number="form.formats[0].durationMinutes"
                     type="number"
                     required
                     class="border border-gray-400 p-2 rounded-sm outline-none focus:border-green-600"
