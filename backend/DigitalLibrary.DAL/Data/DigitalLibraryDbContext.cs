@@ -13,6 +13,8 @@ public class DigitalLibraryDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Genre> Genres => Set<Genre>();
     public DbSet<Book> Books => Set<Book>();
+    public DbSet<BookFile> BookFiles => Set<BookFile>();
+    public DbSet<BookFormat> BookFormats => Set<BookFormat>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,59 +56,120 @@ public class DigitalLibraryDbContext : DbContext
         });
 
         modelBuilder.Entity<Genre>(entity =>
-{
-    entity.ToTable("genres");
+        {
+            entity.ToTable("genres");
 
-    entity.HasKey(genre => genre.Id);
+            entity.HasKey(genre => genre.Id);
 
-    entity.Property(genre => genre.Name)
-        .IsRequired()
-        .HasMaxLength(100);
+            entity.Property(genre => genre.Name)
+                .IsRequired()
+                .HasMaxLength(100);
 
-    entity.HasIndex(genre => genre.Name)
-        .IsUnique();
+            entity.HasIndex(genre => genre.Name)
+                .IsUnique();
+        });
 
+        modelBuilder.Entity<Book>(entity =>
+        {
+            entity.ToTable("books");
 
-    modelBuilder.Entity<Book>(entity =>
-{
-    entity.ToTable("books");
+            entity.HasKey(book => book.Id);
 
-    entity.HasKey(book => book.Id);
+            entity.Property(book => book.Title)
+                .IsRequired()
+                .HasMaxLength(200);
 
-    entity.Property(book => book.Title)
-        .IsRequired()
-        .HasMaxLength(200);
+            entity.Property(book => book.Author)
+                .IsRequired()
+                .HasMaxLength(150);
 
-    entity.Property(book => book.Author)
-        .IsRequired()
-        .HasMaxLength(150);
+            entity.Property(book => book.Description)
+                .IsRequired()
+                .HasMaxLength(2000);
 
-    entity.Property(book => book.Description)
-        .IsRequired()
-        .HasMaxLength(2000);
+            entity.Property(book => book.Language)
+                .IsRequired()
+                .HasMaxLength(50);
 
-    entity.Property(book => book.BookType)
-        .IsRequired()
-        .HasConversion<string>();
+            entity.Property(book => book.PublicationYear)
+                .IsRequired();
 
-    entity.Property(book => book.Language)
-        .IsRequired()
-        .HasMaxLength(50);
+            entity.Property(book => book.CreatedAt)
+                .IsRequired();
 
-    entity.Property(book => book.PublicationYear)
-        .IsRequired();
+            entity.HasOne(book => book.Genre)
+                .WithMany(genre => genre.Books)
+                .HasForeignKey(book => book.GenreId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-    entity.Property(book => book.IsAvailable)
-        .IsRequired();
+            entity.HasIndex(book => new
+            {
+                book.Title,
+                book.Author,
+                book.Language,
+                book.PublicationYear
+            })
+            .IsUnique();
+        });
 
-    entity.Property(book => book.CreatedAt)
-        .IsRequired();
+        modelBuilder.Entity<BookFile>(entity =>
+        {
+            entity.ToTable("book_files");
 
-    entity.HasOne(book => book.Genre)
-        .WithMany(genre => genre.Books)
-        .HasForeignKey(book => book.GenreId)
-        .OnDelete(DeleteBehavior.Restrict);
-});
-});
+            entity.HasKey(file => file.Id);
+
+            entity.Property(file => file.FileName)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            entity.Property(file => file.FilePath)
+                .IsRequired()
+                .HasMaxLength(500);
+
+            entity.Property(file => file.ContentType)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(file => file.FileSize)
+                .IsRequired();
+
+            entity.Property(file => file.FileCategory)
+                .IsRequired()
+                .HasConversion<string>();
+
+            entity.Property(file => file.UploadedAt)
+                .IsRequired();
+
+            entity.HasOne(file => file.Book)
+                .WithMany(book => book.Files)
+                .HasForeignKey(file => file.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<BookFormat>(entity =>
+        {
+            entity.ToTable("book_formats");
+
+            entity.HasKey(format => format.Id);
+
+            entity.Property(format => format.FormatType)
+                .IsRequired()
+                .HasConversion<string>();
+
+            entity.Property(format => format.IsAvailable)
+                .IsRequired();
+
+            entity.HasOne(format => format.Book)
+                .WithMany(book => book.Formats)
+                .HasForeignKey(format => format.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(format => new
+            {
+                format.BookId,
+                format.FormatType
+            })
+            .IsUnique();
+        });
     }
 }

@@ -10,7 +10,7 @@ public class BookResponseDto
 
     public string Description { get; set; } = string.Empty;
 
-    public string BookType { get; set; } = string.Empty;
+    public int GenreId { get; set; }
 
     public string GenreName { get; set; } = string.Empty;
 
@@ -18,11 +18,13 @@ public class BookResponseDto
 
     public int PublicationYear { get; set; }
 
-    public int? PagesCount { get; set; }
+    public List<BookFormatResponseDto> Formats { get; set; } = new();
 
-    public int? DurationMinutes { get; set; }
+    public bool HasCover { get; set; }
 
-    public bool IsAvailable { get; set; }
+    public bool HasDownloadFile { get; set; }
+
+    public bool HasAudioFile { get; set; }
 
     public DateTime CreatedAt { get; set; }
 }

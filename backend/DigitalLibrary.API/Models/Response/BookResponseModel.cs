@@ -10,7 +10,7 @@ public class BookResponseModel
 
     public string Description { get; set; } = string.Empty;
 
-    public string BookType { get; set; } = string.Empty;
+    public int GenreId { get; set; }
 
     public string GenreName { get; set; } = string.Empty;
 
@@ -18,11 +18,13 @@ public class BookResponseModel
 
     public int PublicationYear { get; set; }
 
-    public int? PagesCount { get; set; }
+    public List<BookFormatResponseModel> Formats { get; set; } = new();
 
-    public int? DurationMinutes { get; set; }
+    public string? CoverUrl { get; set; }
 
-    public bool IsAvailable { get; set; }
+    public string? DownloadUrl { get; set; }
+
+    public string? ListenUrl { get; set; }
 
     public DateTime CreatedAt { get; set; }
 }

@@ -13,17 +13,21 @@ public class BookRepository : GenericRepository<Book>, IBookRepository
     {
     }
 
-    public async Task<Book?> GetByIdWithGenreAsync(int id)
+    public async Task<Book?> GetByIdDetailedAsync(int id)
     {
         return await DbSet
             .Include(book => book.Genre)
+            .Include(book => book.Formats)
+            .Include(book => book.Files)
             .FirstOrDefaultAsync(book => book.Id == id);
     }
 
-    public async Task<List<Book>> GetAllWithGenreAsync()
+    public async Task<List<Book>> GetAllDetailedAsync()
     {
         return await DbSet
             .Include(book => book.Genre)
+            .Include(book => book.Formats)
+            .Include(book => book.Files)
             .OrderBy(book => book.Title)
             .ToListAsync();
     }
@@ -31,12 +35,14 @@ public class BookRepository : GenericRepository<Book>, IBookRepository
     public async Task<List<Book>> GetFilteredAsync(
         string? search,
         int? genreId,
-        BookType? bookType,
+        BookFormatType? formatType,
         string? sortBy,
         string? sortDirection)
     {
         IQueryable<Book> query = DbSet
             .Include(book => book.Genre)
+            .Include(book => book.Formats)
+            .Include(book => book.Files)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(search))
@@ -54,9 +60,10 @@ public class BookRepository : GenericRepository<Book>, IBookRepository
             query = query.Where(book => book.GenreId == genreId.Value);
         }
 
-        if (bookType.HasValue)
+        if (formatType.HasValue)
         {
-            query = query.Where(book => book.BookType == bookType.Value);
+            query = query.Where(book =>
+                book.Formats.Any(format => format.FormatType == formatType.Value));
         }
 
         bool descending = string.Equals(
@@ -78,10 +85,6 @@ public class BookRepository : GenericRepository<Book>, IBookRepository
                 ? query.OrderByDescending(book => book.PublicationYear)
                 : query.OrderBy(book => book.PublicationYear),
 
-            "type" => descending
-                ? query.OrderByDescending(book => book.BookType)
-                : query.OrderBy(book => book.BookType),
-
             "genre" => descending
                 ? query.OrderByDescending(book => book.Genre.Name)
                 : query.OrderBy(book => book.Genre.Name),
@@ -90,5 +93,22 @@ public class BookRepository : GenericRepository<Book>, IBookRepository
         };
 
         return await query.ToListAsync();
+    }
+
+    public async Task<bool> ExistsDuplicateAsync(
+        string title,
+        string author,
+        string language,
+        int publicationYear)
+    {
+        string normalizedTitle = title.Trim().ToLower();
+        string normalizedAuthor = author.Trim().ToLower();
+        string normalizedLanguage = language.Trim().ToLower();
+
+        return await DbSet.AnyAsync(book =>
+            book.Title.ToLower() == normalizedTitle &&
+            book.Author.ToLower() == normalizedAuthor &&
+            book.Language.ToLower() == normalizedLanguage &&
+            book.PublicationYear == publicationYear);
     }
 }

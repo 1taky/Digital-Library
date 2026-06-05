@@ -6,7 +6,7 @@ public class BookFilterRequestModel
 
     public int? GenreId { get; set; }
 
-    public string? BookType { get; set; }
+    public string? FormatType { get; set; }
 
     public string? SortBy { get; set; }
 

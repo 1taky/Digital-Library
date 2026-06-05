@@ -35,31 +35,50 @@ public class BllMappingProfile : Profile
 
         CreateMap<Genre, GenreResponseDto>();
 
+        CreateMap<UpdateBookRequestDto, Book>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Trim()))
+            .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author.Trim()))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Trim()))
+            .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.Trim()))
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.Genre, opt => opt.Ignore())
+            .ForMember(dest => dest.Files, opt => opt.Ignore())
+            .ForMember(dest => dest.Formats, opt => opt.MapFrom(src => src.Formats));
+
+        CreateMap<BookFile, BookFileResponseDto>()
+            .ForMember(
+            destination => destination.FileCategory,
+            options => options.MapFrom(source => source.FileCategory.ToString()));
+
+        CreateMap<BookFormatRequestDto, BookFormat>()
+    .ForMember(dest => dest.Id, opt => opt.Ignore())
+    .ForMember(dest => dest.BookId, opt => opt.Ignore())
+    .ForMember(dest => dest.Book, opt => opt.Ignore())
+    .ForMember(dest => dest.FormatType, opt => opt.MapFrom(src => Enum.Parse<BookFormatType>(src.FormatType, true)))
+    .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => true));
+
+        CreateMap<BookFormat, BookFormatResponseDto>()
+            .ForMember(dest => dest.FormatType, opt => opt.MapFrom(src => src.FormatType.ToString()));
 
         CreateMap<CreateBookRequestDto, Book>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => Enum.Parse<BookType>(src.BookType, true)))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Trim()))
-            .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author.Trim()))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Trim()))
-            .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.Trim()))
-            .ForMember(dest => dest.IsAvailable, opt => opt.Ignore())
-            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.Genre, opt => opt.Ignore());
-
-       CreateMap<UpdateBookRequestDto, Book>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => Enum.Parse<BookType>(src.BookType, true)))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Trim()))
             .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author.Trim()))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Trim()))
             .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language.Trim()))
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.IsAvailable, opt => opt.Ignore())
-            .ForMember(dest => dest.Genre, opt => opt.Ignore());
+            .ForMember(dest => dest.Genre, opt => opt.Ignore())
+            .ForMember(dest => dest.Files, opt => opt.Ignore())
+            .ForMember(dest => dest.Formats, opt => opt.MapFrom(src => src.Formats));
 
         CreateMap<Book, BookResponseDto>()
-            .ForMember(dest => dest.BookType, opt => opt.MapFrom(src => src.BookType.ToString()))
-            .ForMember(dest => dest.GenreName, opt => opt.MapFrom(src => src.Genre.Name));
+            .ForMember(dest => dest.GenreName, opt => opt.MapFrom(src => src.Genre.Name))
+            .ForMember(dest => dest.HasCover, opt => opt.MapFrom(src =>
+                src.Files.Any(file => file.FileCategory == FileCategory.Cover)))
+            .ForMember(dest => dest.HasDownloadFile, opt => opt.MapFrom(src =>
+                src.Files.Any(file => file.FileCategory == FileCategory.EBook)))
+            .ForMember(dest => dest.HasAudioFile, opt => opt.MapFrom(src =>
+                src.Files.Any(file => file.FileCategory == FileCategory.Audio)));
     }
 }

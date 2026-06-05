@@ -5,14 +5,20 @@ namespace DigitalLibrary.DAL.Interfaces;
 
 public interface IBookRepository : IGenericRepository<Book>
 {
-    Task<Book?> GetByIdWithGenreAsync(int id);
+    Task<Book?> GetByIdDetailedAsync(int id);
 
-    Task<List<Book>> GetAllWithGenreAsync();
+    Task<List<Book>> GetAllDetailedAsync();
 
     Task<List<Book>> GetFilteredAsync(
         string? search,
         int? genreId,
-        BookType? bookType,
+        BookFormatType? formatType,
         string? sortBy,
         string? sortDirection);
+
+    Task<bool> ExistsDuplicateAsync(
+        string title,
+        string author,
+        string language,
+        int publicationYear);
 }

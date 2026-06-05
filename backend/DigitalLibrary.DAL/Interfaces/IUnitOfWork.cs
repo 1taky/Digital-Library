@@ -8,5 +8,7 @@ public interface IUnitOfWork
 
     IBookRepository Books { get; }
 
+    IBookFileRepository BookFiles { get; }
+
     Task<int> SaveChangesAsync();
 }
