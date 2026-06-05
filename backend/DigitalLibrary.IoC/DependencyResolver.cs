@@ -81,5 +81,13 @@ public class DependencyResolver : Module
         builder.RegisterType<BookFileService>()
             .As<IBookFileService>()
             .InstancePerLifetimeScope();
+
+        builder.RegisterType<OrderRepository>()
+            .As<IOrderRepository>()
+            .InstancePerLifetimeScope();
+
+        builder.RegisterType<OrderService>()
+            .As<IOrderService>()
+            .InstancePerLifetimeScope();
     }
 }

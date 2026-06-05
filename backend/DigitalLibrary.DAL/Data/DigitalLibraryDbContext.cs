@@ -15,6 +15,7 @@ public class DigitalLibraryDbContext : DbContext
     public DbSet<Book> Books => Set<Book>();
     public DbSet<BookFile> BookFiles => Set<BookFile>();
     public DbSet<BookFormat> BookFormats => Set<BookFormat>();
+    public DbSet<Order> Orders => Set<Order>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -170,6 +171,39 @@ public class DigitalLibraryDbContext : DbContext
                 format.FormatType
             })
             .IsUnique();
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.ToTable("orders");
+
+            entity.HasKey(order => order.Id);
+
+            entity.Property(order => order.PhoneNumber)
+                .IsRequired()
+                .HasMaxLength(30);
+
+            entity.Property(order => order.Status)
+                .IsRequired()
+                .HasConversion<string>();
+
+            entity.Property(order => order.CreatedAt)
+                .IsRequired();
+
+            entity.HasOne(order => order.User)
+                .WithMany()
+                .HasForeignKey(order => order.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(order => order.Book)
+                .WithMany()
+                .HasForeignKey(order => order.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(order => order.Manager)
+                .WithMany()
+                .HasForeignKey(order => order.ManagerId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }
