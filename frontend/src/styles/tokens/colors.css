@@ -8,6 +8,7 @@
 
   --accent-yellow: #ffe66d;
   --accent-red: #ff6b6b;
+  --accent-dark-green: #0c6038;
 }
 
 @theme inline {
@@ -19,4 +20,5 @@
 
   --color-accent-yellow: var(--accent-yellow);
   --color-accent-red: var(--accent-red);
+  --color-accent-dark-green: var(--accent-dark-green);
 }
