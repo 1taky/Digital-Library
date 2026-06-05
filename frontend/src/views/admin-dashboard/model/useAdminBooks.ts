@@ -19,6 +19,8 @@ export const useAdminBooks = () => {
   const isEditing = ref(false);
   const editingBookId = ref<number | null>(null);
 
+  const errorMessage = ref('');
+
   const initialFormState: BookPayload = {
     title: '',
     author: '',
@@ -50,9 +52,9 @@ export const useAdminBooks = () => {
     try {
       await deleteBook(id);
       await loadBooks();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Помилка видалення:', error);
-      alert('Не вдалося видалити книгу');
+      errorMessage.value = error.response?.data?.message || 'Deleting error';
     }
   };
 
@@ -93,9 +95,9 @@ export const useAdminBooks = () => {
       }
       closeModal();
       await loadBooks();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Помилка збереження:', error);
-      alert('Не вдалося зберегти книгу');
+      errorMessage.value = error.response?.data?.message || 'Submit error';
     }
   };
 
@@ -119,6 +121,7 @@ export const useAdminBooks = () => {
     isModalOpen,
     isEditing,
     form,
+    errorMessage,
     handleDelete,
     openAddModal,
     openEditModal,
