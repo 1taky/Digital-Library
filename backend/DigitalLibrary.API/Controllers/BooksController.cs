@@ -38,6 +38,13 @@ public class BooksController : ControllerBase
         List<BookResponseModel> responseModel =
             _mapper.Map<List<BookResponseModel>>(responseDto);
 
+        foreach (BookResponseModel model in responseModel)
+        {
+            BookResponseDto dto = responseDto.First(book => book.Id == model.Id);
+
+            FillFileUrls(model, dto);
+        }
+
         return Ok(responseModel);
     }
 
@@ -49,6 +56,8 @@ public class BooksController : ControllerBase
 
         BookResponseModel responseModel =
             _mapper.Map<BookResponseModel>(responseDto);
+
+        FillFileUrls(responseModel, responseDto);
 
         return Ok(responseModel);
     }
@@ -66,6 +75,8 @@ public class BooksController : ControllerBase
 
         BookResponseModel responseModel =
             _mapper.Map<BookResponseModel>(responseDto);
+
+        FillFileUrls(responseModel, responseDto);
 
         return Ok(responseModel);
     }
@@ -85,6 +96,8 @@ public class BooksController : ControllerBase
         BookResponseModel responseModel =
             _mapper.Map<BookResponseModel>(responseDto);
 
+        FillFileUrls(responseModel, responseDto);
+
         return Ok(responseModel);
     }
 
@@ -95,5 +108,35 @@ public class BooksController : ControllerBase
         await _bookService.DeleteAsync(id);
 
         return NoContent();
+    }
+
+    private void FillFileUrls(BookResponseModel model, BookResponseDto dto)
+    {
+        if (dto.HasCover)
+        {
+            model.CoverUrl = Url.Action(
+                action: "GetCover",
+                controller: "BookFiles",
+                values: new { bookId = dto.Id },
+                protocol: Request.Scheme);
+        }
+
+        if (dto.HasDownloadFile)
+        {
+            model.DownloadUrl = Url.Action(
+                action: "Download",
+                controller: "BookFiles",
+                values: new { bookId = dto.Id },
+                protocol: Request.Scheme);
+        }
+
+        if (dto.HasAudioFile)
+        {
+            model.ListenUrl = Url.Action(
+                action: "Listen",
+                controller: "BookFiles",
+                values: new { bookId = dto.Id },
+                protocol: Request.Scheme);
+        }
     }
 }

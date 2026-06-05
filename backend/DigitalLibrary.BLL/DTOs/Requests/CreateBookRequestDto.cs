@@ -8,15 +8,11 @@ public class CreateBookRequestDto
 
     public string Description { get; set; } = string.Empty;
 
-    public string BookType { get; set; } = string.Empty;
-
-    public string GenreName { get; set; } = string.Empty;
+    public int GenreId { get; set; }
 
     public string Language { get; set; } = string.Empty;
 
     public int PublicationYear { get; set; }
 
-    public int? PagesCount { get; set; }
-
-    public int? DurationMinutes { get; set; }
+    public List<BookFormatRequestDto> Formats { get; set; } = new();
 }

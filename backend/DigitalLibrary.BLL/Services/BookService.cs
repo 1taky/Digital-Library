@@ -24,14 +24,45 @@ public class BookService : IBookService
 
     public async Task<List<BookResponseDto>> GetAllAsync()
     {
-        List<Book> books = await _unitOfWork.Books.GetAllWithGenreAsync();
+        List<Book> books = await _unitOfWork.Books.GetAllDetailedAsync();
+
+        return _mapper.Map<List<BookResponseDto>>(books);
+    }
+
+    public async Task<List<BookResponseDto>> GetFilteredAsync(BookFilterRequestDto request)
+    {
+        BookFormatType? parsedFormatType = null;
+
+        if (!string.IsNullOrWhiteSpace(request.FormatType))
+        {
+            bool isValidFormatType = Enum.TryParse(
+                request.FormatType,
+                true,
+                out BookFormatType formatType);
+
+            if (!isValidFormatType)
+            {
+                throw new BadRequestException("Неправильний формат книги.");
+            }
+
+            parsedFormatType = formatType;
+        }
+
+        ValidateSortParameters(request.SortBy, request.SortDirection);
+
+        List<Book> books = await _unitOfWork.Books.GetFilteredAsync(
+            request.Search,
+            request.GenreId,
+            parsedFormatType,
+            request.SortBy,
+            request.SortDirection);
 
         return _mapper.Map<List<BookResponseDto>>(books);
     }
 
     public async Task<BookResponseDto> GetByIdAsync(int id)
     {
-        Book? book = await _unitOfWork.Books.GetByIdWithGenreAsync(id);
+        Book? book = await _unitOfWork.Books.GetByIdDetailedAsync(id);
 
         if (book == null)
         {
@@ -47,30 +78,37 @@ public class BookService : IBookService
             request.Title,
             request.Author,
             request.Description,
-            request.BookType,
-            request.GenreName,
+            request.GenreId,
             request.Language,
             request.PublicationYear,
-            request.PagesCount,
-            request.DurationMinutes);
+            request.Formats);
 
-        Genre? genre = await _unitOfWork.Genres.GetByNameAsync(request.GenreName);
+        Genre? genre = await _unitOfWork.Genres.GetByIdAsync(request.GenreId);
 
         if (genre == null)
         {
             throw new NotFoundException("Жанр не знайдено.");
         }
 
+        bool duplicateExists = await _unitOfWork.Books.ExistsDuplicateAsync(
+            request.Title,
+            request.Author,
+            request.Language,
+            request.PublicationYear);
+
+        if (duplicateExists)
+        {
+            throw new BadRequestException("Така книга вже існує.");
+        }
+
         Book book = _mapper.Map<Book>(request);
 
-        book.GenreId = genre.Id;
-        book.IsAvailable = true;
         book.CreatedAt = DateTime.UtcNow;
 
         await _unitOfWork.Books.AddAsync(book);
         await _unitOfWork.SaveChangesAsync();
 
-        Book createdBook = await _unitOfWork.Books.GetByIdWithGenreAsync(book.Id)
+        Book createdBook = await _unitOfWork.Books.GetByIdDetailedAsync(book.Id)
             ?? throw new NotFoundException("Книгу не знайдено після створення.");
 
         return _mapper.Map<BookResponseDto>(createdBook);
@@ -82,35 +120,50 @@ public class BookService : IBookService
             request.Title,
             request.Author,
             request.Description,
-            request.BookType,
-            request.GenreName,
+            request.GenreId,
             request.Language,
             request.PublicationYear,
-            request.PagesCount,
-            request.DurationMinutes);
+            request.Formats);
 
-        Book? book = await _unitOfWork.Books.GetByIdWithGenreAsync(id);
+        Book? book = await _unitOfWork.Books.GetByIdDetailedAsync(id);
 
         if (book == null)
         {
             throw new NotFoundException("Книгу не знайдено.");
         }
 
-        Genre? genre = await _unitOfWork.Genres.GetByNameAsync(request.GenreName);
+        Genre? genre = await _unitOfWork.Genres.GetByIdAsync(request.GenreId);
 
         if (genre == null)
         {
             throw new NotFoundException("Жанр не знайдено.");
         }
 
-        _mapper.Map(request, book);
+        bool duplicateExists = await _unitOfWork.Books.ExistsDuplicateAsync(
+            request.Title,
+            request.Author,
+            request.Language,
+            request.PublicationYear);
 
-        book.GenreId = genre.Id;
+        if (duplicateExists &&
+            !IsSameBook(book, request))
+        {
+            throw new BadRequestException("Інша книга з такими даними вже існує.");
+        }
+
+        book.Title = request.Title.Trim();
+        book.Author = request.Author.Trim();
+        book.Description = request.Description.Trim();
+        book.GenreId = request.GenreId;
+        book.Language = request.Language.Trim();
+        book.PublicationYear = request.PublicationYear;
+
+        UpdateFormats(book, request.Formats);
 
         _unitOfWork.Books.Update(book);
         await _unitOfWork.SaveChangesAsync();
 
-        Book updatedBook = await _unitOfWork.Books.GetByIdWithGenreAsync(book.Id)
+        Book updatedBook = await _unitOfWork.Books.GetByIdDetailedAsync(book.Id)
             ?? throw new NotFoundException("Книгу не знайдено після оновлення.");
 
         return _mapper.Map<BookResponseDto>(updatedBook);
@@ -129,16 +182,47 @@ public class BookService : IBookService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    private static bool IsSameBook(
+        Book book,
+        UpdateBookRequestDto request)
+    {
+        return string.Equals(book.Title.Trim(), request.Title.Trim(), StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(book.Author.Trim(), request.Author.Trim(), StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(book.Language.Trim(), request.Language.Trim(), StringComparison.OrdinalIgnoreCase) &&
+               book.PublicationYear == request.PublicationYear;
+    }
+
+    private static void UpdateFormats(
+        Book book,
+        List<BookFormatRequestDto> requestedFormats)
+    {
+        book.Formats.Clear();
+
+        foreach (BookFormatRequestDto formatRequest in requestedFormats)
+        {
+            BookFormatType formatType = Enum.Parse<BookFormatType>(
+                formatRequest.FormatType,
+                true);
+
+            book.Formats.Add(new BookFormat
+            {
+                BookId = book.Id,
+                FormatType = formatType,
+                IsAvailable = true,
+                PagesCount = formatRequest.PagesCount,
+                DurationMinutes = formatRequest.DurationMinutes
+            });
+        }
+    }
+
     private static void ValidateBookRequest(
         string title,
         string author,
         string description,
-        string bookType,
-        string genreName,
+        int genreId,
         string language,
         int publicationYear,
-        int? pagesCount,
-        int? durationMinutes)
+        List<BookFormatRequestDto> formats)
     {
         if (string.IsNullOrWhiteSpace(title))
         {
@@ -155,12 +239,7 @@ public class BookService : IBookService
             throw new BadRequestException("Опис книги є обов'язковим.");
         }
 
-        if (!Enum.TryParse(bookType, true, out BookType parsedBookType))
-        {
-            throw new BadRequestException("Неправильний тип книги.");
-        }
-
-        if (string.IsNullOrWhiteSpace(genreName))
+        if (genreId <= 0)
         {
             throw new BadRequestException("Жанр книги є обов'язковим.");
         }
@@ -175,55 +254,52 @@ public class BookService : IBookService
             throw new BadRequestException("Некоректний рік публікації.");
         }
 
-        if (parsedBookType == BookType.Audio)
-        {
-            if (durationMinutes == null || durationMinutes <= 0)
-            {
-                throw new BadRequestException("Для аудіокниги потрібно вказати тривалість.");
-            }
-        }
-        else
-        {
-            if (pagesCount == null || pagesCount <= 0)
-            {
-                throw new BadRequestException("Для паперової або електронної книги потрібно вказати кількість сторінок.");
-            }
-        }
+        ValidateFormats(formats);
     }
 
-    public async Task<List<BookResponseDto>> GetFilteredAsync(BookFilterRequestDto request)
+    private static void ValidateFormats(List<BookFormatRequestDto> formats)
     {
-        BookType? parsedBookType = null;
-
-        if (!string.IsNullOrWhiteSpace(request.BookType))
+        if (formats.Count == 0)
         {
-            bool isValidBookType = Enum.TryParse(
-                request.BookType,
-                true,
-                out BookType bookType);
-
-            if (!isValidBookType)
-            {
-                throw new BadRequestException("Неправильний тип книги.");
-            }
-
-            parsedBookType = bookType;
+            throw new BadRequestException("Потрібно вказати хоча б один формат книги.");
         }
 
-        ValidateSortParameters(request.SortBy, request.SortDirection);
+        var usedFormats = new HashSet<BookFormatType>();
 
-        List<Book> books = await _unitOfWork.Books.GetFilteredAsync(
-            request.Search,
-            request.GenreId,
-            parsedBookType,
-            request.SortBy,
-            request.SortDirection);
+        foreach (BookFormatRequestDto format in formats)
+        {
+            if (!Enum.TryParse(format.FormatType, true, out BookFormatType parsedFormat))
+            {
+                throw new BadRequestException("Неправильний формат книги.");
+            }
 
-        return _mapper.Map<List<BookResponseDto>>(books);
+            if (!usedFormats.Add(parsedFormat))
+            {
+                throw new BadRequestException("Формати книги не повинні повторюватися.");
+            }
+
+            if (parsedFormat == BookFormatType.Paper ||
+                parsedFormat == BookFormatType.Electronic)
+            {
+                if (format.PagesCount == null || format.PagesCount <= 0)
+                {
+                    throw new BadRequestException("Для паперової або електронної книги потрібно вказати кількість сторінок.");
+                }
+            }
+
+            if (parsedFormat == BookFormatType.Audio)
+            {
+                if (format.DurationMinutes == null || format.DurationMinutes <= 0)
+                {
+                    throw new BadRequestException("Для аудіокниги потрібно вказати тривалість.");
+                }
+            }
+        }
     }
+
     private static void ValidateSortParameters(
-    string? sortBy,
-    string? sortDirection)
+        string? sortBy,
+        string? sortDirection)
     {
         if (!string.IsNullOrWhiteSpace(sortBy))
         {
@@ -231,12 +307,11 @@ public class BookService : IBookService
 
             string[] allowedSortFields =
             {
-            "title",
-            "author",
-            "year",
-            "type",
-            "genre"
-        };
+                "title",
+                "author",
+                "year",
+                "genre"
+            };
 
             if (!allowedSortFields.Contains(normalizedSortBy))
             {

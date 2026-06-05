@@ -1,6 +1,6 @@
 namespace DigitalLibrary.DAL.Enums;
 
-public enum BookType
+public enum BookFormatType
 {
     Paper = 0,
     Electronic = 1,

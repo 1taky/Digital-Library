@@ -1,5 +1,3 @@
-using DigitalLibrary.DAL.Enums;
-
 namespace DigitalLibrary.DAL.Entities;
 
 public class Book
@@ -12,8 +10,6 @@ public class Book
 
     public string Description { get; set; } = string.Empty;
 
-    public BookType BookType { get; set; }
-
     public int GenreId { get; set; }
 
     public Genre Genre { get; set; } = null!;
@@ -22,11 +18,9 @@ public class Book
 
     public int PublicationYear { get; set; }
 
-    public int? PagesCount { get; set; }
-
-    public int? DurationMinutes { get; set; }
-
-    public bool IsAvailable { get; set; } = true;
-
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public List<BookFormat> Formats { get; set; } = new();
+
+    public List<BookFile> Files { get; set; } = new();
 }

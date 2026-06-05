@@ -26,8 +26,17 @@ public class ApiMappingProfile : Profile
 
         CreateMap<UpdateBookRequestModel, UpdateBookRequestDto>();
 
-        CreateMap<BookResponseDto, BookResponseModel>();
+        CreateMap<BookFileResponseDto, BookFileResponseModel>();
+
+        CreateMap<BookResponseDto, BookResponseModel>()
+            .ForMember(destination => destination.CoverUrl, options => options.Ignore())
+            .ForMember(destination => destination.DownloadUrl, options => options.Ignore())
+            .ForMember(destination => destination.ListenUrl, options => options.Ignore());
 
         CreateMap<BookFilterRequestModel, BookFilterRequestDto>();
+
+        CreateMap<BookFormatRequestModel, BookFormatRequestDto>();
+
+        CreateMap<BookFormatResponseDto, BookFormatResponseModel>();
     }
 }
