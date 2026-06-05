@@ -6,13 +6,13 @@ import type { NavbarProps } from '@/shared/ui/navbar/model/types';
 export const useNavbar = (props: NavbarProps) => {
   const className = computed(() => {
     return cn(
-      'fixed flex flex-row max-h-[64px] h-full w-full px-[260px] items-center justify-between ',
+      'fixed flex flex-row max-h-[64px] h-full w-full px-32 items-center justify-between bg-background border-b border-muted/10',
       props.className,
     );
   });
 
   const sideClassName = computed(() => {
-    return cn('flex flex-row items-center');
+    return cn('flex flex-row items-center justify-between');
   });
 
   const actionClassname = computed(() => {
