@@ -3,6 +3,7 @@ import { HomePage, LogInPage, RegisterPage } from '@/views';
 import { useAuthStore } from '../stores';
 import { AdminDashboard } from '@/views/admin-dashboard';
 import { BookInfo } from '@/views/book-info';
+import CatalogPage from '@/views/catalog/CatalogPage.vue';
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     name: 'Register',
     component: RegisterPage,
     meta: { title: 'Реєстрація' },
+  },
+  {
+    path: '/catalog',
+    name: 'Catalog',
+    component: CatalogPage,
+    meta: { title: 'Каталог' },
   },
   {
     path: '/admin/panel',
