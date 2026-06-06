@@ -45,8 +45,10 @@ const { filtered, searchQuery, isLoading, errorMessage } = useBooks();
                 class="grid grid-cols-10 gap-4 items-center"
               >
                 <img :src="`${book.coverUrl}`" class="h-12 grid-cols-1" />
-                <span class="flex flex-row items-baseline gap-2">
-                  <Typography size="sm" weight="medium">{{
+                <span
+                  class="flex flex-row items-baseline gap-2 grid-cols-9 w-80"
+                >
+                  <Typography size="sm" weight="medium" class="">{{
                     book.title
                   }}</Typography>
                   <Typography size="xs" weight="regular" class="text-muted">
