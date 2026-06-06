@@ -68,7 +68,7 @@ const { filtered, searchQuery, isLoading, errorMessage } = useBooks();
 
           <p v-if="!isLoading && filtered.length === 0 && !errorMessage">
             <Typography size="sm" weight="regular">
-              За вашим запитом жанрів не знайдено.
+              За вашим запитом книг не знайдено.
             </Typography>
           </p>
         </div>
