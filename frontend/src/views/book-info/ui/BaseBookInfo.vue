@@ -125,7 +125,9 @@ const {
                 {{ hasOrder ? 'Вже замовлено' : 'Орендувати книгу' }}
               </button>
               <button
-                v-if="hasElectronicFormat && book.downloadUrl"
+                v-if="
+                  isAuthenticated && hasElectronicFormat && book.downloadUrl
+                "
                 @click="downloadFileWithAuth(book.downloadUrl, book.title)"
                 :disabled="isDownloading"
                 class="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2 disabled:opacity-75 disabled:cursor-wait"
@@ -134,7 +136,7 @@ const {
               </button>
 
               <button
-                v-if="hasAudioFormat && book.listenUrl"
+                v-if="isAuthenticated && hasAudioFormat && book.listenUrl"
                 @click="listenAudioWithAuth(book.listenUrl)"
                 :disabled="isAudioOpening"
                 class="w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-md transition-colors cursor-pointer shadow-sm text-sm uppercase tracking-wider flex justify-center items-center gap-2 disabled:opacity-75 disabled:cursor-wait"
