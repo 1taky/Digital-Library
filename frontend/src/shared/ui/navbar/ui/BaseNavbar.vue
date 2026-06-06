@@ -46,7 +46,10 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
       <div
         :class="sideClassName"
         class="gap-4"
-        v-if="authStore.currentRole === 'Admin'"
+        v-if="
+          authStore.currentRole === 'Manager' ||
+          authStore.currentRole === 'Admin'
+        "
       >
         <a href="/admin/panel">
           <Typography
@@ -56,6 +59,26 @@ const { className, sideClassName, actionClassname } = useNavbar(props);
             class="select-none cursor-pointer"
           >
             Адм. Панель
+          </Typography>
+        </a>
+        <a href="/admin/orders">
+          <Typography
+            size="sm"
+            weight="medium"
+            :class="actionClassname"
+            class="select-none cursor-pointer"
+          >
+            Замовлення
+          </Typography>
+        </a>
+        <a v-if="authStore.currentRole === 'Admin'" href="/admin/users">
+          <Typography
+            size="sm"
+            weight="medium"
+            :class="actionClassname"
+            class="select-none cursor-pointer"
+          >
+            Користувачі
           </Typography>
         </a>
       </div>

@@ -25,7 +25,7 @@ export const useBooks = () => {
 
       books.value = response.items;
     } catch (error: any) {
-      errorMessage.value = 'Не вдалося завантажити жанри';
+      errorMessage.value = error.message;
       console.error(error);
     } finally {
       isLoading.value = false;
