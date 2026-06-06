@@ -86,7 +86,7 @@ public class BooksController : ControllerBase
 
         FillFileUrls(responseModel, responseDto);
 
-        return Ok(responseModel);
+        return Created("",responseModel);
     }
 
     [HttpPut("{id:int}")]

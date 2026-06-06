@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
 
         AuthResponseModel responseModel = _mapper.Map<AuthResponseModel>(responseDto);
 
-        return Ok(responseModel);
+        return Created("",responseModel);
     }
 
     [HttpPost("login")]

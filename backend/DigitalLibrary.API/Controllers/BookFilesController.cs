@@ -41,7 +41,7 @@ public class BookFilesController : ControllerBase
         BookFileResponseModel responseModel =
             _mapper.Map<BookFileResponseModel>(responseDto);
 
-        return Ok(responseModel);
+        return Created("",responseModel);
     }
 
     [HttpPost("file")]
@@ -63,7 +63,7 @@ public class BookFilesController : ControllerBase
         BookFileResponseModel responseModel =
             _mapper.Map<BookFileResponseModel>(responseDto);
 
-        return Ok(responseModel);
+        return Created("",responseModel);
     }
 
     [HttpPost("audio")]
@@ -85,7 +85,7 @@ public class BookFilesController : ControllerBase
         BookFileResponseModel responseModel =
             _mapper.Map<BookFileResponseModel>(responseDto);
 
-        return Ok(responseModel);
+        return Created("",responseModel);
     }
 
     [HttpGet("cover")]

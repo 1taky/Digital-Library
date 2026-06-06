@@ -41,7 +41,7 @@ public class OrdersController : ControllerBase
         OrderResponseModel responseModel =
             _mapper.Map<OrderResponseModel>(responseDto);
 
-        return Ok(responseModel);
+        return Created("",responseModel);
     }
 
     [HttpGet("my")]

@@ -285,7 +285,7 @@ public class BookService : IBookService
             throw new BadRequestException("Потрібно вказати хоча б один формат книги.");
         }
 
-        var usedFormats = new HashSet<BookFormatType>();
+        HashSet<BookFormatType> usedFormats = new HashSet<BookFormatType>();
 
         foreach (BookFormatRequestDto format in formats)
         {

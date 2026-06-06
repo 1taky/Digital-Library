@@ -202,7 +202,7 @@ public class BookFileService : IBookFileService
 
         string fullPath = Path.Combine(uploadsDirectory, storedFileName);
 
-        await using (var outputStream = new FileStream(fullPath, FileMode.Create))
+        await using (FileStream outputStream = new FileStream(fullPath, FileMode.Create))
         {
             await fileStream.CopyToAsync(outputStream);
         }
@@ -232,7 +232,7 @@ public class BookFileService : IBookFileService
             return existingFile;
         }
 
-        var bookFile = new BookFile
+        BookFile bookFile = new BookFile
         {
             BookId = bookId,
             FileName = originalFileName,

@@ -50,7 +50,7 @@ public class GenresController : ControllerBase
         GenreResponseModel responseModel =
             _mapper.Map<GenreResponseModel>(responseDto);
 
-        return Ok(responseModel);
+        return Created("",responseModel);
     }
 
     [HttpDelete("{id:int}")]

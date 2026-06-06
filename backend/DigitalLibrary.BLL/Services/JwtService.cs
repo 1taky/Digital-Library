@@ -22,7 +22,7 @@ public class JwtService : IJwtService
         string secretKey = _configuration["Jwt:Key"]
             ?? throw new InvalidOperationException("JWT key is not configured.");
 
-        var claims = new List<Claim>
+        List<Claim> claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
@@ -30,14 +30,14 @@ public class JwtService : IJwtService
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
-        var key = new SymmetricSecurityKey(
+        SymmetricSecurityKey key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(secretKey));
 
-        var credentials = new SigningCredentials(
+        SigningCredentials credentials = new SigningCredentials(
             key,
             SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(
+        JwtSecurityToken token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
